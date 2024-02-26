@@ -3,7 +3,7 @@
 using GeneratorDuty.Commands;
 using Telegram.Bot;
 
-string token = "6917225080:AAEQ3CiIryqdOCjRI30p6hKiJ1VK0iUNq70";
+string token = "6917225080:AAF9MX2V4HX2rKVbJX7O3DW3xIhsyvcUun4";
 
 var botClient = new TelegramBotClient(token);
 

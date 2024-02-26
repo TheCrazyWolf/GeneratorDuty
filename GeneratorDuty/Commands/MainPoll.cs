@@ -13,6 +13,11 @@ public class MainPoll : IUpdateHandler
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
     {
+        if (update.Message?.Text == null || update.Type != UpdateType.Message)
+        {
+            return;
+        }
+        
         string message = CommandHelper.GetReplacedCommandFromDomain(update.Message?.Text);
         string command = message.Split(' ').First();
         
@@ -25,6 +30,7 @@ public class MainPoll : IUpdateHandler
                 await GetCommand.ExecuteCommand(botClient, update, cancellationToken);
                 break;
             case "/clear":
+                await ClearCommand.ExecuteCommand(botClient, update, cancellationToken);
                 break;
             
         }
@@ -33,6 +39,6 @@ public class MainPoll : IUpdateHandler
 
     public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;;
     }
 }
