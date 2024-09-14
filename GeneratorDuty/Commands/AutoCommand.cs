@@ -28,7 +28,7 @@ public class AutoCommand(DutyContext ef) : BaseCommand
 
         if (prop is null)
         {
-            await client.SendTextMessageAsync(message.From.Id, "На эту беседу нет установленных данных. Используйте /set <фио препода/группа/кабинет>");
+            await client.SendTextMessageAsync(message.From.Id, "ℹ️ На эту беседу нет установленных данных. Используйте /set <фио препода/группа/кабинет>");
             return;
         }
         
@@ -38,11 +38,11 @@ public class AutoCommand(DutyContext ef) : BaseCommand
             prop.IsAutoSend = newParam;
             ef.Update(prop);
             await ef.SaveChangesAsync();
-            await client.SendTextMessageAsync(message.From.Id, "Настройки этой беседы обновлены");
+            await client.SendTextMessageAsync(message.From.Id, "✅ Настройки этой беседы обновлены");
         }
         catch (Exception e)
         {
-            await client.SendTextMessageAsync(message.From.Id, "Не удалось обновить настройки. Usage: /auto true/false");
+            await client.SendTextMessageAsync(message.From.Id, "ℹ️ Не удалось обновить настройки. Usage: /auto true/false");
         }
         
     }

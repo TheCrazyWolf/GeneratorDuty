@@ -17,9 +17,10 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
+        var membersArray = message.Text.Split('\n');
         await GetAndRemoveOlds(message.From.Id);
-        await AddNewDuty(message.Text.Split('\n'), message.From.Id);
-        await client.SendTextMessageAsync(message.From.Id, "Готово!");
+        await AddNewDuty(membersArray, message.From.Id);
+        await client.SendTextMessageAsync(message.From.Id, $"✅ Обновили список группы: {membersArray}");
     }
 
     private async Task GetAndRemoveOlds(long peerId)

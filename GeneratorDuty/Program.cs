@@ -22,10 +22,10 @@ static class Program
         // See https://aka.ms/new-console-template for more information
         var me = await _botClient.GetMeAsync();
         CommandStingUtils.Me = me.Username ?? string.Empty;
-        await _botClient.ReceiveAsync(new MainPoll(new DutyContext()));
-
         foreach (var task in _tasks)
             _ = task.RunAsync();
+        
+        await _botClient.ReceiveAsync(new MainPoll(_ef));
         
         await Task.Delay(-1);
     }

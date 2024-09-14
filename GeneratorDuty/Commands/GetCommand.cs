@@ -26,12 +26,12 @@ public class GetCommand(DutyContext ef) : BaseCommand
 
         if (members.Count is 0)
         {
-            await client.SendTextMessageAsync(message.From.Id, $"В это беседе не настроены списки дежурных, юзай /update и укажи список группы разделяя переносом строки ФИО");
+            await client.SendTextMessageAsync(message.From.Id, $"ℹ️ В это беседе не настроены списки дежурных, юзай /update и укажи список группы разделяя переносом строки ФИО");
             return;
         }
         
         string duntyStudent = members[_rnd.Next(0, members.Count)].MemberNameDuty;
         
-        await client.SendTextMessageAsync(message.From.Id, $"Сегодня дежурит: {duntyStudent}");
+        await client.SendTextMessageAsync(message.From.Id, $"✅ Сегодня дежурит: {duntyStudent}");
     }
 }

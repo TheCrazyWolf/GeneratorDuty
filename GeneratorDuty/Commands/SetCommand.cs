@@ -30,10 +30,9 @@ public class SetCommand(DutyContext ef) : BaseCommand
             message.Text =message.Text.Substring(i);
         }
         
-        var anyGroup = _clientSamgk.Groups.GetGroup(message.Text);
-        var anyCab = _clientSamgk.Cabs.GetCab(message.Text);
-        var anyTeacher = _clientSamgk.Accounts.GetTeachers().FirstOrDefault(x =>
-            x.Name.Equals(message.Text, StringComparison.CurrentCultureIgnoreCase));
+        var anyGroup = await _clientSamgk.Groups.GetGroupAsync(message.Text);
+        var anyCab = await _clientSamgk.Cabs.GetCabAsync(message.Text);
+        var anyTeacher = await _clientSamgk.Accounts.GetTeacherAsync(message.Text);
 
         await GetAndRemoveOlds(message.From.Id);
 
@@ -48,9 +47,9 @@ public class SetCommand(DutyContext ef) : BaseCommand
 
 
         if (string.IsNullOrEmpty(value))
-            await client.SendTextMessageAsync(message.From.Id, "Ничего не нашли");
+            await client.SendTextMessageAsync(message.From.Id, "ℹ️ Ничего не нашли");
         else
-            await client.SendTextMessageAsync(message.From.Id, $"Установлено {value}");
+            await client.SendTextMessageAsync(message.From.Id, $"✅ На эту беседу установлено: {value}");
     }
 
     private async Task<string> SetToDb(IResultOutGroup group, long peerId)

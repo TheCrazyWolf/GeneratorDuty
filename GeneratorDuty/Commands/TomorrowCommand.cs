@@ -24,7 +24,7 @@ public class TomorrowCommand(DutyContext ef) : BaseCommand
         
         if(prop is null)
         {
-            await client.SendTextMessageAsync(message.From.Id, $"Не смог найти настройки для Вашей беседы, задай /set <группа, фио препода, кабинет>");
+            await client.SendTextMessageAsync(message.From.Id, $"ℹ️ Не смог найти настройки для Вашей беседы, задай /set <группа, фио препода, кабинет>");
             return;
         }
         

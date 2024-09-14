@@ -3,13 +3,14 @@ using ClientSamgk;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
+using GeneratorDuty.Utils;
 using Telegram.Bot;
 
 namespace GeneratorDuty.BackgroundServices;
 
 public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseTask
 {
-    private ClientSamgkApi _clientSamgkApi = new ClientSamgkApi();
+    private readonly ClientSamgkApi _clientSamgkApi = new ClientSamgkApi();
     public override Task RunAsync()
     {
         Task.Run(WorkSerivce);
@@ -41,64 +42,39 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
 
                 var result = await _clientSamgkApi.Schedule
                     .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
+
+                if (result.Lessons.Count is 0) continue;
                 
-                item.LastResult = GetStringFromRasp(result);
-                await client.SendTextMessageAsync(item.IdPeer, item.LastResult);
+                var newResult = result.GetStringFromRasp();
+                
+                if(item.LastResult == newResult) continue;
+                
+                try
+                {
+                    await client.SendTextMessageAsync(item.IdPeer, item.LastResult);
+                    item.LastResult = newResult;
+                    ef.Update(item);
+                    await ef.SaveChangesAsync();
+                }
+                catch (Exception e)
+                {
+                    // ignored
+                }
                 
                 await Task.Delay(1000);
             }
             
-            await Task.Delay(1000);
+            // задержка 30 мин
+            await Task.Delay(1800000);
         }
     }
-    
     
     private bool CanWorkSerivce(DateTime nowTime)
     {
-        return true;
-    }
-    
-    protected string GetStringFromRasp(IResultOutScheduleFromDate scheduleFromDate)
-    {
-        var msg = new StringBuilder();
-
-        msg.AppendLine($"Расписание на {scheduleFromDate.Date}");
-        
-        foreach (var lesson in scheduleFromDate.Lessons
-                     .GroupBy(l => new { l.NumPair, l.NumLesson, l.SubjectDetails.SubjectName})
-                     .Select(g => g.First())
-                     .ToList())
+        return nowTime.Hour switch
         {
-            msg.AppendLine($"=====================");
-            msg.AppendLine($"{lesson.NumPair}.{lesson.NumLesson}");
-            msg.AppendLine($"{GetShortDiscipline(lesson.SubjectDetails.SubjectName)}");
-            msg.AppendLine($"{GetPrepareStringTeacher(lesson.Identity.First().Name)}");
-            msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}");
-        }
-
-        return msg.ToString();
-    }
-    
-    protected string GetPrepareStringTeacher(string teacherName)
-    {
-        teacherName = teacherName.Replace("  ", string.Empty)
-            .Replace("  ", string.Empty);
-        
-        var arraysTeacherName = teacherName.Split(' ');
-
-        if (arraysTeacherName.Length == 3)
-            return $"{arraysTeacherName[0]} {arraysTeacherName[1].FirstOrDefault()}. {arraysTeacherName[2].FirstOrDefault()}.";
-
-        return teacherName;
-    }
-
-    protected string GetShortDiscipline(string disciplineName)
-    {
-        var arraysDisciplineName = disciplineName.Split(' ');
-
-        if (arraysDisciplineName.Length <= 3)
-            return disciplineName;
-
-        return $"{arraysDisciplineName[0]} {arraysDisciplineName[1]} {arraysDisciplineName[2]}...";
+            >= 22 or <= 7 => false,
+            _ => true
+        };
     }
 }
