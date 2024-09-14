@@ -1,4 +1,5 @@
-﻿using Telegram.Bot.Types;
+﻿using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Common;
 
@@ -11,5 +12,5 @@ public abstract class BaseCommand
         return message.Text != null && message.Text.Contains(Command);
     }
 
-    public abstract Task ExecuteAsync();
+    public abstract Task ExecuteAsync(ITelegramBotClient client, Message message);
 }

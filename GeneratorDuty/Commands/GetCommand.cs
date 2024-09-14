@@ -1,46 +1,37 @@
+using ClientSamgk;
+using ClientSamgk.Enums;
+using ClientSamgkOutputResponse.Interfaces.Cabs;
+using ClientSamgkOutputResponse.Interfaces.Groups;
+using ClientSamgkOutputResponse.Interfaces.Identity;
+using GeneratorDuty.Common;
+using GeneratorDuty.Database;
+using GeneratorDuty.Models;
 using GeneratorDuty.Services;
-using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Commands;
 
-public class GetCommand
+public class GetCommand(DutyContext ef) : BaseCommand
 {
-    public static async Task ExecuteCommand(ITelegramBotClient botClient, Update update,
-        CancellationToken cancellationToken)
+    readonly Random _rnd = new Random();
+    public override string Command { get; } = "/get";
+
+    public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
-        if (update.Message?.Text != null && update.Type == UpdateType.Message &&
-            CommandHelper.GetReplacedCommandFromDomain(update.Message?.Text) == "/get")
+        if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
+        
+        var members = await ef.MemberDuties.Where(x => x.IdPeer == message.From.Id).ToListAsync();
+
+        if (members.Count is 0)
         {
-            if (!System.IO.File.Exists("students.json"))
-            {
-                await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Файл students.json не существует");
-                return;
-            }
-
-            var json = System.IO.File.ReadAllText("students.json");
-            var students = JsonConvert.DeserializeObject<IList<string>>(json);
-
-            if (students is null)
-            {
-                await botClient.SendTextMessageAsync(update.Message.Chat.Id, "Ошибка чтения списка");
-                return;
-            }
-
-            try
-            {
-                Random rnd = new Random();
-                int rndInd = rnd.Next(0, students.Count);
-                string duntyStudent = students[rndInd];
-
-                await botClient.SendTextMessageAsync(update.Message.Chat.Id, $"Дежурный: {duntyStudent}");
-            }
-            catch (Exception e)
-            {
-                await botClient.SendTextMessageAsync(update.Message.Chat.Id, $"Ошибка: \n{e.Message}");
-            }
+            await client.SendTextMessageAsync(message.From.Id, $"В это беседе не настроены списки дежурных, юзай /update и укажи список группы разделяя переносом строки ФИО");
+            return;
         }
+        
+        string duntyStudent = members[_rnd.Next(0, members.Count)].MemberNameDuty;
+        
+        await client.SendTextMessageAsync(message.From.Id, $"Сегодня дежурит: {duntyStudent}");
     }
 }
