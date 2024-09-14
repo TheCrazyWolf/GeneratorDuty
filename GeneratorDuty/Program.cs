@@ -1,17 +1,32 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using GeneratorDuty.BackgroundServices;
+using GeneratorDuty.Common;
 
-using GeneratorDuty.Database;
-using GeneratorDuty.Services;
-using GeneratorDuty.Telegrams;
+namespace GeneratorDuty;
+using Database;
+using Services;
+using Telegrams;
 using Telegram.Bot;
 
-string token = "6917225080:AAF9MX2V4HX2rKVbJX7O3DW3xIhsyvcUun4";
+static class Program
+{
+    private static readonly string _token = string.Empty;
+    private static readonly ITelegramBotClient _botClient = new TelegramBotClient(_token);
+    private static readonly DutyContext _ef = new DutyContext();
+    private static IReadOnlyCollection<BaseTask> _tasks = new List<BaseTask>()
+    {
+        new AutoSendSchedule(_botClient, _ef)
+    };
+    
+    static async Task Main(string[] args)
+    {
+        // See https://aka.ms/new-console-template for more information
+        var me = await _botClient.GetMeAsync();
+        CommandStingUtils.Me = me.Username ?? string.Empty;
+        await _botClient.ReceiveAsync(new MainPoll(new DutyContext()));
 
-var botClient = new TelegramBotClient(token);
-
-var me = await botClient.GetMeAsync();
-CommandStingUtils.Me = me.Username ?? string.Empty;
-
-await botClient.ReceiveAsync(new MainPoll(new DutyContext()));
-
-await Task.Delay(-1);
+        foreach (var task in _tasks)
+            _ = task.RunAsync();
+        
+        await Task.Delay(-1);
+    }
+}
