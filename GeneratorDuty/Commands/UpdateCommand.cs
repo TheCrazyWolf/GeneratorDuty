@@ -15,7 +15,7 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
-        message.Text = message.Text.GetReplacedCommandFromDomain();
+        message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
         await GetAndRemoveOlds(message.From.Id);
         await AddNewDuty(message.Text.Split('\n'), message.From.Id);

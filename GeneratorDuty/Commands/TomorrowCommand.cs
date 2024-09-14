@@ -32,7 +32,7 @@ public class TomorrowCommand(DutyContext ef) : TodayCommand(ef)
         var currentDateTime = DateTime.Now;
 
 
-        while (currentDateTime.DayOfWeek is not DayOfWeek.Saturday or DayOfWeek.Sunday)
+        while (currentDateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
         {
             currentDateTime = currentDateTime.AddDays(1);
         }
@@ -42,28 +42,4 @@ public class TomorrowCommand(DutyContext ef) : TodayCommand(ef)
         
         await client.SendTextMessageAsync(message.From.Id, GetStringFromRasp(result));
     }
-
-    protected string GetStringFromRasp(IResultOutScheduleFromDate scheduleFromDate)
-    {
-        var msg = new StringBuilder();
-
-        msg.AppendLine($"Расписание на {scheduleFromDate.Date}");
-        
-        foreach (var lesson in scheduleFromDate.Lessons
-                     .GroupBy(l => new { l.NumPair, l.NumLesson, l.SubjectDetails.SubjectName})
-                     .Select(g => g.First())
-                     .ToList())
-        {
-            msg.AppendLine($"=====================");
-            msg.AppendLine($"{lesson.NumPair}.{lesson.NumLesson}");
-            msg.AppendLine($"{GetShortDiscipline(lesson.SubjectDetails.SubjectName)}");
-            msg.AppendLine($"{GetPrepareStringTeacher(lesson.Identity.First().Name)}");
-            msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}");
-        }
-
-        return msg.ToString();
-    }
-    
-
-    
 }

@@ -23,7 +23,13 @@ public class SetCommand(DutyContext ef) : BaseCommand
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
-
+        
+        if (message.Text.Length > 0)
+        {
+            int i = message.Text.IndexOf(" ", StringComparison.Ordinal)+1;
+            message.Text =message.Text.Substring(i);
+        }
+        
         var anyGroup = _clientSamgk.Groups.GetGroup(message.Text);
         var anyCab = _clientSamgk.Cabs.GetCab(message.Text);
         var anyTeacher = _clientSamgk.Accounts.GetTeachers().FirstOrDefault(x =>
