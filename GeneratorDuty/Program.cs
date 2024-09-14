@@ -9,7 +9,7 @@ using Telegram.Bot;
 
 static class Program
 {
-    private static readonly string _token = string.Empty;
+    private static readonly string _token = "";
     private static readonly ITelegramBotClient _botClient = new TelegramBotClient(_token);
     private static readonly DutyContext _ef = new DutyContext();
     private static IReadOnlyCollection<BaseTask> _tasks = new List<BaseTask>()

@@ -4,6 +4,7 @@ using ClientSamgkOutputResponse.Interfaces.Schedule;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Services;
+using GeneratorDuty.Utils;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -29,53 +30,9 @@ public class TodayCommand(DutyContext ef) : BaseCommand
             return;
         }
         
-        var result = await _clientSamgk.Sсhedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
+        var result = await _clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
             prop.SearchType, prop.Value);
         
-        await client.SendTextMessageAsync(message.From.Id, GetStringFromRasp(result));
-    }
-
-    protected string GetStringFromRasp(IResultOutScheduleFromDate scheduleFromDate)
-    {
-        var msg = new StringBuilder();
-
-        msg.AppendLine($"Расписание на {scheduleFromDate.Date}");
-        
-        foreach (var lesson in scheduleFromDate.Lessons
-                     .GroupBy(l => new { l.NumPair, l.NumLesson, l.SubjectDetails.SubjectName})
-                     .Select(g => g.First())
-                     .ToList())
-        {
-            msg.AppendLine($"=====================");
-            msg.AppendLine($"{lesson.NumPair}.{lesson.NumLesson}");
-            msg.AppendLine($"{GetShortDiscipline(lesson.SubjectDetails.SubjectName)}");
-            msg.AppendLine($"{GetPrepareStringTeacher(lesson.Identity.First().Name)}");
-            msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}");
-        }
-
-        return msg.ToString();
-    }
-    
-    protected string GetPrepareStringTeacher(string teacherName)
-    {
-        teacherName = teacherName.Replace("  ", string.Empty)
-            .Replace("  ", string.Empty);
-        
-        var arraysTeacherName = teacherName.Split(' ');
-
-        if (arraysTeacherName.Length == 3)
-            return $"{arraysTeacherName[0]} {arraysTeacherName[1].FirstOrDefault()}. {arraysTeacherName[2].FirstOrDefault()}.";
-
-        return teacherName;
-    }
-
-    protected string GetShortDiscipline(string disciplineName)
-    {
-        var arraysDisciplineName = disciplineName.Split(' ');
-
-        if (arraysDisciplineName.Length <= 3)
-            return disciplineName;
-
-        return $"{arraysDisciplineName[0]} {arraysDisciplineName[1]} {arraysDisciplineName[2]}...";
+        await client.SendTextMessageAsync(message.From.Id, result.GetStringFromRasp());
     }
 }

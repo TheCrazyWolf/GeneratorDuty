@@ -1,18 +1,17 @@
-using System.Text;
 using ClientSamgk;
-using ClientSamgkOutputResponse.Interfaces.Schedule;
+using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Services;
+using GeneratorDuty.Utils;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class TomorrowCommand(DutyContext ef) : TodayCommand(ef)
+public class TomorrowCommand(DutyContext ef) : BaseCommand
 {
     private readonly ClientSamgkApi _clientSamgk = new ClientSamgkApi();
-    private readonly DutyContext _ef = ef;
     public override string Command { get; } = "/tomorrow";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
@@ -21,7 +20,7 @@ public class TomorrowCommand(DutyContext ef) : TodayCommand(ef)
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
-        var prop = await _ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.From.Id);
+        var prop = await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.From.Id);
         
         if(prop is null)
         {
@@ -37,9 +36,9 @@ public class TomorrowCommand(DutyContext ef) : TodayCommand(ef)
             currentDateTime = currentDateTime.AddDays(1);
         }
         
-        var result = await _clientSamgk.Sсhedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
+        var result = await _clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
             prop.SearchType, prop.Value);
         
-        await client.SendTextMessageAsync(message.From.Id, GetStringFromRasp(result));
+        await client.SendTextMessageAsync(message.From.Id, result.GetStringFromRasp());
     }
 }
