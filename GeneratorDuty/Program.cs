@@ -1,41 +1,29 @@
 ﻿using GeneratorDuty.BackgroundServices;
 using GeneratorDuty.Common;
-
-namespace GeneratorDuty;
-
-using Database;
-using Services;
-using Telegrams;
+using GeneratorDuty.Database;
+using GeneratorDuty.Services;
+using GeneratorDuty.Telegrams;
 using Telegram.Bot;
 
-static class Program
+string token = args.FirstOrDefault() ?? string.Empty;
+        
+if (string.IsNullOrWhiteSpace(token))
+    throw new Exception("Не указан токен");
+
+ITelegramBotClient botClient = new TelegramBotClient(token);
+DutyContext ef = new DutyContext();
+
+IReadOnlyCollection<BaseTask> tasks = new List<BaseTask>()
 {
-    private static string _token = "";
-    private static ITelegramBotClient _botClient = default!;
-    private static readonly DutyContext _ef = new DutyContext();
+    new AutoSendSchedule(botClient, ef)
+};
 
-    private static IReadOnlyCollection<BaseTask> _tasks = new List<BaseTask>()
-    {
-        new AutoSendSchedule(_botClient, _ef)
-    };
+var me = await botClient.GetMeAsync();
+CommandStingUtils.Me = me.Username ?? string.Empty;
+        
+foreach (var task in tasks)
+    task.RunAsync().Wait();
 
-    static async Task Main(string[] args)
-    {
-        _token = args.FirstOrDefault() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(_token))
-            throw new Exception("Не указан токен");
+await botClient.ReceiveAsync(new MainPoll(ef));
 
-        _botClient = new TelegramBotClient(_token);
-        Console.WriteLine(_token);
-
-        // See https://aka.ms/new-console-template for more information
-        var me = await _botClient.GetMeAsync();
-        CommandStingUtils.Me = me.Username ?? string.Empty;
-        foreach (var task in _tasks)
-            task.RunAsync().Wait();
-
-        await _botClient.ReceiveAsync(new MainPoll(_ef));
-
-        await Task.Delay(-1);
-    }
-}
+await Task.Delay(-1);

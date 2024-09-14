@@ -19,25 +19,29 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
     {
         while (true)
         {
-            if(!CanWorkSerivce(DateTime.Now)) continue;
+            if(!CanWorkSerivce(DateTime.Now))
+            {
+                await Task.Delay(5000);
+                continue;
+            }
 
             var g = ef.ScheduleProps
                 .Where(x => x.IsAutoSend).ToList();
             
+            var dateTime = DateTime.Now;
+
+            // если время вечернее смотрим расписание на перед
+            if (dateTime.Hour >= 14)
+                dateTime = dateTime.AddDays(1);
+            
+            // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
+            while (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
+                dateTime = dateTime.AddDays(1);
+            }
+            
             foreach (var item in g)
             {
-                var dateTime = DateTime.Now;
-
-                // если время вечернее смотрим расписание на перед
-                if (dateTime.Hour >= 18)
-                    dateTime = dateTime.AddDays(1);
-                
-                // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
-                while (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-                {
-                    dateTime = dateTime.AddDays(1);
-                }
-
                 var result = await _clientSamgkApi.Schedule
                     .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
 
@@ -59,7 +63,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
                     // ignored
                 }
                 
-                await Task.Delay(1000);
+                await Task.Delay(2000);
             }
             
             // задержка 30 мин
@@ -71,7 +75,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
     {
         return nowTime.Hour switch
         {
-            >= 22 or <= 7 => false,
+            >= 19 or <= 7 => false,
             _ => true
         };
     }
