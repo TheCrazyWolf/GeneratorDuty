@@ -48,8 +48,12 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
                 if (result.Lessons.Count is 0) continue;
                 
                 var newResult = result.GetStringFromRasp();
-                
-                if(item.LastResult == newResult) continue;
+
+                if (item.LastResult == newResult)
+                {
+                    await Task.Delay(5000);
+                    continue;
+                }
                 
                 try
                 {
