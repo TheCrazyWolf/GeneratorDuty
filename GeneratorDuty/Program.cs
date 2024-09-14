@@ -11,7 +11,7 @@ using Telegram.Bot;
 static class Program
 {
     private static string _token = "";
-    private static  ITelegramBotClient _botClient = default!;
+    private static ITelegramBotClient _botClient = default!;
     private static readonly DutyContext _ef = new DutyContext();
 
     private static IReadOnlyCollection<BaseTask> _tasks = new List<BaseTask>()
@@ -32,7 +32,7 @@ static class Program
         var me = await _botClient.GetMeAsync();
         CommandStingUtils.Me = me.Username ?? string.Empty;
         foreach (var task in _tasks)
-            _ = task.RunAsync();
+            task.RunAsync().Wait();
 
         await _botClient.ReceiveAsync(new MainPoll(_ef));
 

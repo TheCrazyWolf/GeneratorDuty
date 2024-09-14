@@ -18,6 +18,13 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
         var membersArray = message.Text.Split('\n');
+
+        if (membersArray.Length is 0 or 1)
+        {
+            await client.SendTextMessageAsync(message.Chat.Id, $"Слишком короткий список");
+            return;
+        }
+        
         await GetAndRemoveOlds(message.Chat.Id);
         await AddNewDuty(membersArray, message.Chat.Id);
         await client.SendTextMessageAsync(message.Chat.Id, $"✅ Обновили список группы: {membersArray.Length}");
