@@ -20,11 +20,11 @@ public class TomorrowCommand(DutyContext ef) : BaseCommand
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
-        var prop = await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.From.Id);
+        var prop = await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.Chat.Id);
         
         if(prop is null)
         {
-            await client.SendTextMessageAsync(message.From.Id, $"ℹ️ Не смог найти настройки для Вашей беседы, задай /set <группа, фио препода, кабинет>");
+            await client.SendTextMessageAsync(message.Chat.Id, $"ℹ️ Не смог найти настройки для Вашей беседы, задай /set <группа, фио препода, кабинет>");
             return;
         }
         
@@ -39,6 +39,6 @@ public class TomorrowCommand(DutyContext ef) : BaseCommand
         var result = await _clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
             prop.SearchType, prop.Value);
         
-        await client.SendTextMessageAsync(message.From.Id, result.GetStringFromRasp());
+        await client.SendTextMessageAsync(message.Chat.Id, result.GetStringFromRasp());
     }
 }

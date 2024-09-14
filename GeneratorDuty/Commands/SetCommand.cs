@@ -34,22 +34,22 @@ public class SetCommand(DutyContext ef) : BaseCommand
         var anyCab = await _clientSamgk.Cabs.GetCabAsync(message.Text);
         var anyTeacher = await _clientSamgk.Accounts.GetTeacherAsync(message.Text);
 
-        await GetAndRemoveOlds(message.From.Id);
+        await GetAndRemoveOlds(message.Chat.Id);
 
         string value = string.Empty;
 
         if (anyGroup is not null)
-            value = await SetToDb(anyGroup, message.From.Id);
+            value = await SetToDb(anyGroup, message.Chat.Id);
         else if (anyTeacher is not null)
-            value = await SetToDb(anyTeacher, message.From.Id);
+            value = await SetToDb(anyTeacher, message.Chat.Id);
         else if (anyCab is not null)
-            value = await SetToDb(anyCab, message.From.Id);
+            value = await SetToDb(anyCab, message.Chat.Id);
 
 
         if (string.IsNullOrEmpty(value))
-            await client.SendTextMessageAsync(message.From.Id, "ℹ️ Ничего не нашли");
+            await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ Ничего не нашли");
         else
-            await client.SendTextMessageAsync(message.From.Id, $"✅ На эту беседу установлено: {value}");
+            await client.SendTextMessageAsync(message.Chat.Id, $"✅ На эту беседу установлено: {value}");
     }
 
     private async Task<string> SetToDb(IResultOutGroup group, long peerId)

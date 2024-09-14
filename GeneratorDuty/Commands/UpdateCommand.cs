@@ -18,9 +18,9 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
         var membersArray = message.Text.Split('\n');
-        await GetAndRemoveOlds(message.From.Id);
-        await AddNewDuty(membersArray, message.From.Id);
-        await client.SendTextMessageAsync(message.From.Id, $"✅ Обновили список группы: {membersArray}");
+        await GetAndRemoveOlds(message.Chat.Id);
+        await AddNewDuty(membersArray, message.Chat.Id);
+        await client.SendTextMessageAsync(message.Chat.Id, $"✅ Обновили список группы: {membersArray.Length}");
     }
 
     private async Task GetAndRemoveOlds(long peerId)

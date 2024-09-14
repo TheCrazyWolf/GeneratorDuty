@@ -24,11 +24,11 @@ public class AutoCommand(DutyContext ef) : BaseCommand
 
         message.Text = message.Text.GetReplacedCommandFromDomain();
         
-        var prop = await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.From.Id);
+        var prop = await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.Chat.Id);
 
         if (prop is null)
         {
-            await client.SendTextMessageAsync(message.From.Id, "ℹ️ На эту беседу нет установленных данных. Используйте /set <фио препода/группа/кабинет>");
+            await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ На эту беседу нет установленных данных. Используйте /set <фио препода/группа/кабинет>");
             return;
         }
         
@@ -38,11 +38,11 @@ public class AutoCommand(DutyContext ef) : BaseCommand
             prop.IsAutoSend = newParam;
             ef.Update(prop);
             await ef.SaveChangesAsync();
-            await client.SendTextMessageAsync(message.From.Id, "✅ Настройки этой беседы обновлены");
+            await client.SendTextMessageAsync(message.Chat.Id, "✅ Настройки этой беседы обновлены");
         }
         catch (Exception e)
         {
-            await client.SendTextMessageAsync(message.From.Id, "ℹ️ Не удалось обновить настройки. Usage: /auto true/false");
+            await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ Не удалось обновить настройки. Usage: /auto true/false");
         }
         
     }
