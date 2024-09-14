@@ -17,7 +17,8 @@ public class MainPoll(DutyContext ef) : IUpdateHandler
         new GetCommand(ef),
         new UpdateCommand(ef),
         new TodayCommand(ef),
-        new TomorrowCommand(ef)
+        new TomorrowCommand(ef),
+        new AutoCommand(ef)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
