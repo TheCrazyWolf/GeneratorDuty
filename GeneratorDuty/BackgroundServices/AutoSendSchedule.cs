@@ -49,7 +49,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
                 
                 try
                 {
-                    await client.SendTextMessageAsync(item.IdPeer, item.LastResult);
+                    await client.SendTextMessageAsync(item.IdPeer, newResult);
                     item.LastResult = newResult;
                     ef.Update(item);
                     await ef.SaveChangesAsync();
