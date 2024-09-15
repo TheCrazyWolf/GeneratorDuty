@@ -107,19 +107,5 @@ public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseComman
 
         await ef.SaveChangesAsync();
     }
-
-    private async Task AddNewDuty(IEnumerable<string> d, long peerId)
-    {
-        foreach (var item in d)
-        {
-            if (string.IsNullOrEmpty(item)) continue;
-
-            await ef.AddAsync(new MemberDuty
-            {
-                IdPeer = peerId,
-                MemberNameDuty = item
-            });
-        }
-        await ef.SaveChangesAsync();
-    }
+    
 }
