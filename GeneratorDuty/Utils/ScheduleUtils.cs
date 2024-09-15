@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 
 namespace GeneratorDuty.Utils;
@@ -9,18 +10,17 @@ public static class ScheduleUtils
     {
         var msg = new StringBuilder();
 
-        msg.AppendLine($"Расписание на {scheduleFromDate.Date}");
+        msg.AppendLine($"Расписание на {scheduleFromDate.Date} ({CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek)})");
         
         foreach (var lesson in scheduleFromDate.Lessons
                      .GroupBy(l => new { l.NumPair, l.NumLesson, l.SubjectDetails.SubjectName})
                      .Select(g => g.First())
                      .ToList())
         {
-            msg.AppendLine($"=====================");
-            msg.AppendLine($"{lesson.NumPair}.{lesson.NumLesson}");
+            msg.AppendLine($"<blockquote>{lesson.NumPair}.{lesson.NumLesson}");
             msg.AppendLine($"{GetShortDiscipline(lesson.SubjectDetails.SubjectName)}");
             msg.AppendLine($"{GetPrepareStringTeacher(lesson.Identity.First().Name)}");
-            msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}");
+            msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}</blockquote>");
         }
 
         return msg.ToString();

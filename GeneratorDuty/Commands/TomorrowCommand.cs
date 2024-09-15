@@ -6,6 +6,7 @@ using GeneratorDuty.Utils;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Commands;
 
@@ -39,6 +40,6 @@ public class TomorrowCommand(DutyContext ef) : BaseCommand
         var result = await _clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
             prop.SearchType, prop.Value);
         
-        await client.SendTextMessageAsync(message.Chat.Id, result.GetStringFromRasp());
+        await client.SendTextMessageAsync(message.Chat.Id, result.GetStringFromRasp(), parseMode: ParseMode.Html);
     }
 }

@@ -3,6 +3,7 @@ using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Utils;
 using Telegram.Bot;
+using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.BackgroundServices;
 
@@ -57,7 +58,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
                 
                 try
                 {
-                    await client.SendTextMessageAsync(item.IdPeer, newResult);
+                    await client.SendTextMessageAsync(item.IdPeer, newResult, parseMode:ParseMode.Html);
                     item.LastResult = newResult;
                     ef.Update(item);
                     await ef.SaveChangesAsync();
