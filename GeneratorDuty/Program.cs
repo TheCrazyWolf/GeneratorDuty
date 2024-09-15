@@ -17,7 +17,8 @@ ClientSamgkApi samgkApi = new ClientSamgkApi();
 
 IReadOnlyCollection<BaseTask> tasks = new List<BaseTask>()
 {
-    new AutoSendSchedule(botClient, ef)
+    new AutoSendSchedule(botClient, ef, samgkApi),
+    new AutoSendScheduleExport(botClient, ef, samgkApi)
 };
 
 var me = await botClient.GetMeAsync();
