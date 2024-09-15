@@ -19,7 +19,8 @@ public class MainPoll(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandl
         new TodayCommand(ef, clientSamgk),
         new TomorrowCommand(ef, clientSamgk),
         new AutoCommand(ef),
-        new ExportCommand(clientSamgk)
+        new ExportCommand(clientSamgk),
+        new SAutoCommand(ef)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,

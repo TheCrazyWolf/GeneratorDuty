@@ -2,10 +2,8 @@
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
-using GeneratorDuty.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.BackgroundServices;
 
