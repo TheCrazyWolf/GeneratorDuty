@@ -39,7 +39,7 @@ public class AutoCommand(DutyContext ef) : BaseCommand
             await ef.SaveChangesAsync();
             await client.SendTextMessageAsync(message.Chat.Id, "✅ Настройки этой беседы обновлены");
         }
-        catch (Exception e)
+        catch 
         {
             await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ Не удалось обновить настройки. Usage: /auto true/false");
         }

@@ -63,7 +63,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef) : BaseT
                     ef.Update(item);
                     await ef.SaveChangesAsync();
                 }
-                catch (Exception e)
+                catch 
                 {
                     await Task.Delay(5000);
                     // ignored
