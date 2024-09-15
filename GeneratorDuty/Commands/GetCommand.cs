@@ -1,12 +1,5 @@
-using ClientSamgk;
-using ClientSamgk.Enums;
-using ClientSamgkOutputResponse.Interfaces.Cabs;
-using ClientSamgkOutputResponse.Interfaces.Groups;
-using ClientSamgkOutputResponse.Interfaces.Identity;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
-using GeneratorDuty.Models;
-using GeneratorDuty.Services;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;

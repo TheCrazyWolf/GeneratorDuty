@@ -1,6 +1,4 @@
-using System.Text;
 using ClientSamgk;
-using ClientSamgkOutputResponse.Interfaces.Schedule;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Services;
