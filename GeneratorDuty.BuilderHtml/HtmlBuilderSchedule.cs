@@ -30,10 +30,10 @@ public class HtmlBuilderSchedule : Common.BuilderHtml
             var teachers = string.Empty;
             var cabs = string.Empty;
 
-            teachers = item.Identity.Aggregate(teachers, (current, teacher) => current + $"{teacher.Name}<br>");
-            cabs = item.Cabs.Aggregate(cabs, (current, cab) => current + $"{cab.Adress}<br>");
+            teachers = item.Identity.Aggregate(teachers, (current, teacher) => current + $"<br>{teacher.Name}");
+            cabs = item.Cabs.Aggregate(cabs, (current, cab) => current + $"<br>{cab.Adress}");
 
-            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <td>{item.SubjectDetails.SubjectName}\n{teachers}</td> <td>{cabs}</td> </tr>";
+            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <td><b>{item.SubjectDetails.SubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
             _rows += row;
         }
     }
