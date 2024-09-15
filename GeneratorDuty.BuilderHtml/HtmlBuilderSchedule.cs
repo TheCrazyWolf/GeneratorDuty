@@ -33,7 +33,7 @@ public class HtmlBuilderSchedule : Common.BuilderHtml
             teachers = item.Identity.Aggregate(teachers, (current, teacher) => current + $"<br>{teacher.Name}");
             cabs = item.Cabs.Aggregate(cabs, (current, cab) => current + $"<br>{cab.Adress}");
 
-            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <br>{item.EducationGroup.Name}</td> <td><b>{item.SubjectDetails.SubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
+            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <td>{item.EducationGroup.Name}</td> <td><b>{item.SubjectDetails.SubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
             _rows += row;
         }
     }
