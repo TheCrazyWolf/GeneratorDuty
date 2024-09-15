@@ -9,5 +9,6 @@ public class ScheduleProp : CommonEntity
     public ScheduleSearchType SearchType { get; set; }
     public string Value { get; set; } = string.Empty;
     public bool IsAutoSend { get; set; } = false;
+    public bool IsAutoExport { get; set; } = false;
     public string LastResult { get; set; } = string.Empty;
 }

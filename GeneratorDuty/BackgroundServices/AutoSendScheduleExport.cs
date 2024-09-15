@@ -1,13 +1,15 @@
 ﻿using ClientSamgk;
+using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Utils;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.BackgroundServices;
 
-public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientSamgkApi clientSamgkApi) : BaseTask
+public class AutoSendScheduleExport(ITelegramBotClient client, DutyContext ef, ClientSamgkApi clientSamgkApi) : BaseTask
 {
     public override Task RunAsync()
     {
@@ -26,30 +28,22 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
             }
 
             var g = ef.ScheduleProps
-                .Where(x => x.IsAutoSend).ToList();
+                .Where(x => x.IsAutoExport).ToList();
             
             var dateTime = DateTime.Now;
-
-            // если время вечернее смотрим расписание на перед
-            if (dateTime.Hour >= 14)
-                dateTime = dateTime.AddDays(1);
             
             // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
-            while (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            
+            if(dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
             {
-                dateTime = dateTime.AddDays(1);
+                await Task.Delay(5000);
+                continue;
             }
             
             foreach (var item in g)
             {
-                var result = await clientSamgkApi.Schedule
-                    .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
-
-                if (result.Lessons.Count is 0) continue;
                 
-                var newResult = result.GetStringFromRasp();
-
-                if (item.LastResult == newResult)
+                if (item.LastResult == DateTime.Now.ToString("yyyy-MM-dd"))
                 {
                     await Task.Delay(5000);
                     continue;
@@ -57,15 +51,30 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
                 
                 try
                 {
-                    await client.SendTextMessageAsync(item.IdPeer, newResult, parseMode:ParseMode.Html);
-                    item.LastResult = newResult;
+                    var builderSchedule = new HtmlBuilderSchedule();
+                    
+                    var allExportResult = await clientSamgkApi.Schedule
+                        .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
+
+                    if(allExportResult.Count is 0)
+                    {
+                        await Task.Delay(5000);
+                        continue;
+                    }
+                    
+                    foreach (var scheduleFromDate in allExportResult)
+                        builderSchedule.AddRow(scheduleFromDate, item.SearchType);
+
+                    await client.SendDocumentAsync(item.IdPeer,
+                        new InputFileStream(builderSchedule.GetStreamFile(), $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
+                    
+                    item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
                     ef.Update(item);
                     await ef.SaveChangesAsync();
                 }
                 catch 
                 {
                     await Task.Delay(5000);
-                    // ignored
                 }
                 
                 await Task.Delay(2000);
@@ -80,7 +89,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
     {
         return nowTime.Hour switch
         {
-            >= 19 or <= 7 => false,
+            >= 12 or <= 7 => false,
             _ => true
         };
     }
