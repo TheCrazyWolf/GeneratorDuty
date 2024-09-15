@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GeneratorDuty.BuilderHtml\GeneratorDuty.BuilderHtml.csproj" />
       <ProjectReference Include="..\GeneratorDuty.Models\GeneratorDuty.Models.csproj" />
     </ItemGroup>
 

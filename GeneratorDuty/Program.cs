@@ -1,4 +1,5 @@
-﻿using GeneratorDuty.BackgroundServices;
+﻿using ClientSamgk;
+using GeneratorDuty.BackgroundServices;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Services;
@@ -12,6 +13,7 @@ if (string.IsNullOrWhiteSpace(token))
 
 ITelegramBotClient botClient = new TelegramBotClient(token);
 DutyContext ef = new DutyContext();
+ClientSamgkApi samgkApi = new ClientSamgkApi();
 
 IReadOnlyCollection<BaseTask> tasks = new List<BaseTask>()
 {
@@ -24,6 +26,6 @@ CommandStingUtils.Me = me.Username ?? string.Empty;
 foreach (var task in tasks)
     task.RunAsync().Wait();
 
-await botClient.ReceiveAsync(new MainPoll(ef));
+await botClient.ReceiveAsync(new MainPoll(ef, samgkApi));
 
 await Task.Delay(-1);

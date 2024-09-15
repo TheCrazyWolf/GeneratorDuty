@@ -15,7 +15,6 @@ namespace GeneratorDuty.Commands;
 
 public class AutoCommand(DutyContext ef) : BaseCommand
 {
-    private readonly ClientSamgkApi _clientSamgk = new ClientSamgkApi();
     public override string Command { get; } = "/auto";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)

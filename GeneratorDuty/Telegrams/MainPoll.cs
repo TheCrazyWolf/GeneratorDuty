@@ -1,7 +1,7 @@
+using ClientSamgk;
 using GeneratorDuty.Commands;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
-using GeneratorDuty.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -9,16 +9,17 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Telegrams;
 
-public class MainPoll(DutyContext ef) : IUpdateHandler
+public class MainPoll(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandler
 {
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {
-        new SetCommand(ef),
+        new SetCommand(ef, clientSamgk),
         new GetCommand(ef),
         new UpdateCommand(ef),
-        new TodayCommand(ef),
-        new TomorrowCommand(ef),
-        new AutoCommand(ef)
+        new TodayCommand(ef, clientSamgk),
+        new TomorrowCommand(ef, clientSamgk),
+        new AutoCommand(ef),
+        new ExportCommand(clientSamgk)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,

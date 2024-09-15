@@ -13,9 +13,8 @@ using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class SetCommand(DutyContext ef) : BaseCommand
+public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseCommand
 {
-    private readonly ClientSamgkApi _clientSamgk = new ClientSamgkApi();
     public override string Command { get; } = "/set";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
@@ -30,9 +29,9 @@ public class SetCommand(DutyContext ef) : BaseCommand
             message.Text =message.Text.Substring(i);
         }
         
-        var anyGroup = await _clientSamgk.Groups.GetGroupAsync(message.Text);
-        var anyCab = await _clientSamgk.Cabs.GetCabAsync(message.Text);
-        var anyTeacher = await _clientSamgk.Accounts.GetTeacherAsync(message.Text);
+        var anyGroup = await clientSamgk.Groups.GetGroupAsync(message.Text);
+        var anyCab = await clientSamgk.Cabs.GetCabAsync(message.Text);
+        var anyTeacher = await clientSamgk.Accounts.GetTeacherAsync(message.Text);
 
         await GetAndRemoveOlds(message.Chat.Id);
 

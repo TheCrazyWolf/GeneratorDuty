@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorDuty", "GeneratorD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorDuty.Models", "GeneratorDuty.Models\GeneratorDuty.Models.csproj", "{AE69E1D6-5FC6-49B3-8552-04E7021402D1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneratorDuty.BuilderHtml", "GeneratorDuty.BuilderHtml\GeneratorDuty.BuilderHtml.csproj", "{AC32DDCE-2BBE-4E39-B554-C846AA69BF26}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{AE69E1D6-5FC6-49B3-8552-04E7021402D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE69E1D6-5FC6-49B3-8552-04E7021402D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE69E1D6-5FC6-49B3-8552-04E7021402D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC32DDCE-2BBE-4E39-B554-C846AA69BF26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC32DDCE-2BBE-4E39-B554-C846AA69BF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC32DDCE-2BBE-4E39-B554-C846AA69BF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC32DDCE-2BBE-4E39-B554-C846AA69BF26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -12,9 +12,8 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Commands;
 
-public class TodayCommand(DutyContext ef) : BaseCommand
+public class TodayCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseCommand
 {
-    private readonly ClientSamgkApi _clientSamgk = new ClientSamgkApi();
     public override string Command { get; } = "/today";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
@@ -31,7 +30,7 @@ public class TodayCommand(DutyContext ef) : BaseCommand
             return;
         }
         
-        var result = await _clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
+        var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
             prop.SearchType, prop.Value);
         
         await client.SendTextMessageAsync(message.Chat.Id, result.GetStringFromRasp(), parseMode: ParseMode.Html);

@@ -10,9 +10,8 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Commands;
 
-public class TomorrowCommand(DutyContext ef) : BaseCommand
+public class TomorrowCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseCommand
 {
-    private readonly ClientSamgkApi _clientSamgk = new ClientSamgkApi();
     public override string Command { get; } = "/tomorrow";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
@@ -37,7 +36,7 @@ public class TomorrowCommand(DutyContext ef) : BaseCommand
             currentDateTime = currentDateTime.AddDays(1);
         }
         
-        var result = await _clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
+        var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
             prop.SearchType, prop.Value);
         
         await client.SendTextMessageAsync(message.Chat.Id, result.GetStringFromRasp(), parseMode: ParseMode.Html);
