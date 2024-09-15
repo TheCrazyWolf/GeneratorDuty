@@ -17,13 +17,13 @@ public class HtmlBuilderSchedule : Common.BuilderHtml
     private void AddRow()
     {
         var row =
-            $"<tr> <th>Пара</th> <th>Время</th> <th>Дисциплина/преподаватель</th> <th>Кабинет</th> </tr>";
+            $"<tr> <th>Пара</th> <th>Время</th> <th>Группа</th> <th>Дисциплина/преподаватель</th> <th>Кабинет</th> </tr>";
         _rows += row;
     }
     
     public void AddRow(IResultOutScheduleFromDate result, ScheduleSearchType searchType)
     {
-        _rows += $"<td style=\"text-align: center;\" colspan=\"4\">{GetRowTitle(result, searchType)}</td>";
+        _rows += $"<td style=\"text-align: center;\" colspan=\"5\">{GetRowTitle(result, searchType)}</td>";
         
         foreach (var item in result.Lessons)
         {
@@ -33,7 +33,7 @@ public class HtmlBuilderSchedule : Common.BuilderHtml
             teachers = item.Identity.Aggregate(teachers, (current, teacher) => current + $"<br>{teacher.Name}");
             cabs = item.Cabs.Aggregate(cabs, (current, cab) => current + $"<br>{cab.Adress}");
 
-            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <td><b>{item.SubjectDetails.SubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
+            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <br>{item.EducationGroup.Name}</td> <td><b>{item.SubjectDetails.SubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
             _rows += row;
         }
     }
