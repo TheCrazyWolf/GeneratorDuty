@@ -28,7 +28,7 @@ public class TomorrowCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseC
             return;
         }
         
-        var currentDateTime = DateTime.Now;
+        var currentDateTime = DateTime.Now.AddDays(1);
 
 
         while (currentDateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
