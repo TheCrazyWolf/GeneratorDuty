@@ -31,7 +31,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
             var dateTime = DateTime.Now;
 
             // если время вечернее смотрим расписание на перед
-            if (dateTime.Hour >= 14)
+            if (dateTime.Hour >= 10)
                 dateTime = dateTime.AddDays(1);
             
             // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
