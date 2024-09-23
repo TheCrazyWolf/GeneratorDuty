@@ -21,7 +21,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
         {
             if(!CanWorkSerivce(DateTime.Now))
             {
-                await Task.Delay(5000);
+                await Task.Delay(GetDelayFromDateTime(DateTime.Now));
                 continue;
             }
 
@@ -72,7 +72,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
             }
             
             // задержка 30 мин
-            await Task.Delay(1800000);
+            await Task.Delay(GetDelayFromDateTime(DateTime.Now));
         }
     }
     
@@ -83,5 +83,18 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
             >= 19 or <= 7 => false,
             _ => true
         };
+    }
+
+    private int GetDelayFromDateTime(DateTime dateTime)
+    {
+        switch (dateTime.Hour)
+        {
+            case >= 10 and <= 16:
+                return 300000; // 5 мин
+            case >= 17 and <= 19:
+                return 900000; // 15 минут
+            default:
+                return 1800000; // 30 минут
+        }
     }
 }
