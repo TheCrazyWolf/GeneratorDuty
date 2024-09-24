@@ -51,7 +51,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
 
                 if (item.LastResult == newResult)
                 {
-                    await Task.Delay(5000);
+                    await Task.Delay(GetDelayFromDateTime(DateTime.Now));
                     continue;
                 }
                 
