@@ -64,11 +64,11 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
                 }
                 catch 
                 {
-                    await Task.Delay(5000);
+                    await Task.Delay(GetDelayFromDateTime(DateTime.Now));
                     // ignored
                 }
                 
-                await Task.Delay(2000);
+                await Task.Delay(GetDelayFromDateTime(DateTime.Now));
             }
             
             // задержка 30 мин
