@@ -61,6 +61,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
                     item.LastResult = newResult;
                     ef.Update(item);
                     await ef.SaveChangesAsync();
+                    continue;
                 }
                 catch 
                 {
