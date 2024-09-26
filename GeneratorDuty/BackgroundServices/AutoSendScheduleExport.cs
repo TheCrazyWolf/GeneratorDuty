@@ -1,85 +1,65 @@
-﻿using ClientSamgk;
+﻿using System.Timers;
+using ClientSamgk;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Timer =  System.Timers.Timer;
 
 namespace GeneratorDuty.BackgroundServices;
 
 public class AutoSendScheduleExport(ITelegramBotClient client, DutyContext ef, ClientSamgkApi clientSamgkApi) : BaseTask
 {
+    private readonly Timer _timer = new Timer
+    {
+        Interval = 300000, // 300000
+    };
+    
     public override Task RunAsync()
     {
-        Task.Run(WorkSerivce);
+        _timer.Elapsed += OnEventExecution;
+        _timer.Start();
         return Task.CompletedTask;
     }
 
-    private async Task WorkSerivce()
+    private async void OnEventExecution(object? sender, ElapsedEventArgs e)
     {
-        while (true)
+        var dateTime = DateTime.Now;
+        
+        if(!CanWorkSerivce(DateTime.Now)) return;
+        
+        var scheduleProps = ef.ScheduleProps.Where(x => x.IsAutoExport).ToList();
+        
+        if(dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) return;
+
+        foreach (var item in scheduleProps.Where(item => item.LastResult
+                                                         != DateTime.Now.ToString("yyyy-MM-dd")))
         {
-            if(!CanWorkSerivce(DateTime.Now))
+            try
             {
-                await Task.Delay(5000);
-                continue;
-            }
+                var builderSchedule = new HtmlBuilderSchedule();
 
-            var g = ef.ScheduleProps
-                .Where(x => x.IsAutoExport).ToList();
-            
-            var dateTime = DateTime.Now;
-            
-            // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
-            
-            if(dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+                var allExportResult = await clientSamgkApi.Schedule
+                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
+
+                if (allExportResult.Count is 0) continue;
+
+                foreach (var scheduleFromDate in allExportResult)
+                    builderSchedule.AddRow(scheduleFromDate, item.SearchType);
+
+                await client.SendDocumentAsync(item.IdPeer,
+                    new InputFileStream(builderSchedule.GetStreamFile(),
+                        $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
+
+                item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
+                ef.Update(item);
+                await ef.SaveChangesAsync();
+            }
+            catch
             {
-                await Task.Delay(5000);
-                continue;
+                //
             }
-            
-            foreach (var item in g)
-            {
-                
-                if (item.LastResult == DateTime.Now.ToString("yyyy-MM-dd"))
-                {
-                    await Task.Delay(5000);
-                    continue;
-                }
-                
-                try
-                {
-                    var builderSchedule = new HtmlBuilderSchedule();
-                    
-                    var allExportResult = await clientSamgkApi.Schedule
-                        .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
-
-                    if(allExportResult.Count is 0)
-                    {
-                        await Task.Delay(5000);
-                        continue;
-                    }
-                    
-                    foreach (var scheduleFromDate in allExportResult)
-                        builderSchedule.AddRow(scheduleFromDate, item.SearchType);
-
-                    await client.SendDocumentAsync(item.IdPeer,
-                        new InputFileStream(builderSchedule.GetStreamFile(), $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
-                    
-                    item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
-                    ef.Update(item);
-                    await ef.SaveChangesAsync();
-                }
-                catch 
-                {
-                    await Task.Delay(5000);
-                }
-                
-                await Task.Delay(2000);
-            }
-            
-            // задержка 30 мин
-            await Task.Delay(1800000);
         }
     }
     
