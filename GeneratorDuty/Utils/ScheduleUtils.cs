@@ -15,7 +15,8 @@ public static class ScheduleUtils
         foreach (var lesson in scheduleFromDate.Lessons)
         {
             msg.AppendLine($"<blockquote><b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b> ({lesson.NumPair}.{lesson.NumLesson})");
-            msg.AppendLine($"{lesson.SubjectDetails.SubjectName}");
+            var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
+            msg.AppendLine($"{isAttestation} {lesson.SubjectDetails.SubjectName}");
             msg.AppendLine($"{lesson.Identity.First().GetShortName()}");
             msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}</blockquote>");
         }
