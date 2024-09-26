@@ -57,7 +57,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
                 
                 try
                 {
-                    await client.SendTextMessageAsync(item.IdPeer, newResult, parseMode:ParseMode.Html);
+                    await client.SendTextMessageAsync(item.IdPeer, newResult, parseMode: ParseMode.Html);
                     item.LastResult = newResult;
                     ef.Update(item);
                     await ef.SaveChangesAsync();
