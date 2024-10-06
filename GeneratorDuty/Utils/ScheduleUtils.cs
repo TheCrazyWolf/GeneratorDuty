@@ -10,15 +10,17 @@ public static class ScheduleUtils
     {
         var msg = new StringBuilder();
 
-        msg.AppendLine($"Расписание на {scheduleFromDate.Date} ({CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek)})");
+        msg.AppendLine($"Расписание на {scheduleFromDate.Date.ToString("dd.MM")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek)}");
         
         foreach (var lesson in scheduleFromDate.Lessons)
         {
-            msg.AppendLine($"<blockquote><b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b> ({lesson.NumPair}.{lesson.NumLesson})");
+            string teachers = lesson.Identity.Aggregate(string.Empty, (current, teacher) => current + (lesson.Identity.Count >= 2 ? $"{teacher.ShortName}," : $"{teacher.ShortName}"));
+            string cabs = lesson.Cabs.Aggregate(string.Empty, (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"<b>{cab.Auditory}</b>," : $"<b>{cab.Auditory}</b>"));
+            msg.AppendLine($"<blockquote>{lesson.NumPair}.{lesson.NumLesson} | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
             var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
             msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.SubjectName}");
-            msg.AppendLine($"{lesson.Identity.First().ShortName}");
-            msg.AppendLine($"Каб: {lesson.Cabs.FirstOrDefault()?.Adress} • {lesson.EducationGroup.Name}</blockquote>");
+            msg.AppendLine($"{teachers}");
+            msg.AppendLine($"Каб: {cabs} • {lesson.EducationGroup.Name}</blockquote>");
         }
 
         return msg.ToString();
