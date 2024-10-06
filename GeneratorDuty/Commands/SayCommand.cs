@@ -32,7 +32,6 @@ public class SayCommand(DutyContext ef) : BaseCommand
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                throw;
             }
         }
         

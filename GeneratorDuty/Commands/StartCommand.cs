@@ -35,7 +35,6 @@ public class StartCommand() : BaseCommand
         catch (Exception e)
         {
             Console.WriteLine(e);
-            throw;
         }
     }
 }
