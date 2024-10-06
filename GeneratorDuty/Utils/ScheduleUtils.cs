@@ -15,7 +15,7 @@ public static class ScheduleUtils
         foreach (var lesson in scheduleFromDate.Lessons)
         {
             string teachers = lesson.Identity.Aggregate(string.Empty, (current, teacher) => current + (lesson.Identity.Count >= 2 ? $"{teacher.ShortName}," : $"{teacher.ShortName}"));
-            string cabs = lesson.Cabs.Aggregate(string.Empty, (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"<b>{cab.Auditory}</b>," : $"<b>{cab.Auditory}</b>"));
+            string cabs = lesson.Cabs.Aggregate(string.Empty, (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"{cab.Auditory}," : $"{cab.Auditory}"));
             msg.AppendLine($"<blockquote>{lesson.NumPair}.{lesson.NumLesson} | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
             var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
             msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.SubjectName}");
