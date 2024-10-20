@@ -12,21 +12,21 @@ if (string.IsNullOrWhiteSpace(token))
     throw new Exception("Не указан токен");
 
 ITelegramBotClient botClient = new TelegramBotClient(token);
-DutyContext ef = new DutyContext();
+
 ClientSamgkApi samgkApi = new ClientSamgkApi();
 
-IReadOnlyCollection<BaseTask> tasks = new List<BaseTask>()
+IReadOnlyCollection<BaseTask> tasks = new List<BaseTask>
 {
-    new AutoSendSchedule(botClient, ef, samgkApi),
-    new AutoSendScheduleExport(botClient, ef, samgkApi)
+    new AutoSendSchedule(botClient, new DutyContext(), samgkApi),
+    new AutoSendScheduleExport(botClient, new DutyContext(), samgkApi)
 };
 
 var me = await botClient.GetMeAsync();
 CommandStingUtils.Me = me.Username ?? string.Empty;
-        
-foreach (var task in tasks)
-    task.RunAsync().Wait();
 
-await botClient.ReceiveAsync(new MainPoll(ef, samgkApi));
+foreach (var task in tasks)
+    _ = task.RunAsync();
+
+await botClient.ReceiveAsync(new MainPoll(new DutyContext(), samgkApi));
 
 await Task.Delay(-1);
