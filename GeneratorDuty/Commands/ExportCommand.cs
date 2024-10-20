@@ -13,14 +13,15 @@ public class ExportCommand(ClientSamgkApi clientSamgk) : BaseCommand
 {
     public override string Command { get; } = "/export";
 
+    private readonly string _usage = "Usage: /export <type> <date>";
+    private readonly string _wait = "Запрос принят, ожидайте результата";
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
-        HtmlBuilderSchedule builderSchedule = new HtmlBuilderSchedule();
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
-        DateTime dateTime = DateTime.Now;
+        DateTime dateTime;
         ScheduleSearchType searchType = ScheduleSearchType.Cab;
         
         try
@@ -31,14 +32,16 @@ public class ExportCommand(ClientSamgkApi clientSamgk) : BaseCommand
         }
         catch 
         {
-            await client.SendTextMessageAsync(message.Chat.Id, "Usage: /export <type> <date>");
+            await client.TrySendMessage(message.Chat.Id, _usage);
             return;
         }
         
-        await client.SendTextMessageAsync(message.Chat.Id, "Запрос принят, ожидайте результата", parseMode: ParseMode.Html);
+        await client.SendTextMessageAsync(message.Chat.Id, _wait);
         
         var result = await clientSamgk.Schedule.GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), searchType);
 
+        HtmlBuilderSchedule builderSchedule = new HtmlBuilderSchedule();
+        
         foreach (var item in result)
             builderSchedule.AddRow(item, searchType);
 

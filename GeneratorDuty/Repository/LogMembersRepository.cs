@@ -42,4 +42,11 @@ public class LogsMembers(DutyContext ef)
         ef.Remove(log);
         await ef.SaveChangesAsync();
     }
+
+    public async Task<LogDutyMember?> GetLastLog(MemberDuty item)
+    {
+        return await ef.LogDutyMembers
+            .Where(x => x.UserId == item.Id)
+            .OrderBy(x=> x.Date).LastOrDefaultAsync();
+    }
 }

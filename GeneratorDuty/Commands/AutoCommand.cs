@@ -1,42 +1,44 @@
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
+using GeneratorDuty.Repository;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class AutoCommand(DutyContext ef) : BaseCommand
+public class AutoCommand(DutyRepository repository) : BaseCommand
 {
     public override string Command { get; } = "/auto";
 
+    private readonly string _usage = "ℹ️ На эту беседу нет установленных данных. Используйте /set <фио препода/группа/кабинет>";
+    private readonly string _success = "✅ Настройки этой беседы обновлены";
+    private readonly string _unSuccess = "ℹ️ Не удалось обновить настройки. Usage: /auto true/false";
+    
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
 
         message.Text = message.Text.GetReplacedCommandFromDomain();
-        
-        var prop = await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == message.Chat.Id);
+
+        var prop = await repository.ScheduleProps.GetSchedulePropFromChat(message.Chat.Id);
 
         if (prop is null)
         {
-            await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ На эту беседу нет установленных данных. Используйте /set <фио препода/группа/кабинет>");
+            await client.TrySendMessage(message.Chat.Id, _usage);
+            return;
+        }
+
+        if (!bool.TryParse(message.Text.Split(' ')[1], out bool result))
+        {
+            await client.TrySendMessage(message.Chat.Id, _unSuccess);
             return;
         }
         
-        try
-        {
-            var newParam = Convert.ToBoolean(message.Text.Split(' ')[1]);
-            prop.IsAutoSend = newParam;
-            ef.Update(prop);
-            await ef.SaveChangesAsync();
-            await client.SendTextMessageAsync(message.Chat.Id, "✅ Настройки этой беседы обновлены");
-        }
-        catch 
-        {
-            await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ Не удалось обновить настройки. Usage: /auto true/false");
-        }
+        prop.IsAutoSend = result;
+        await repository.ScheduleProps.Update(prop);
         
+        await client.TrySendMessage(message.Chat.Id, _success);
     }
 }

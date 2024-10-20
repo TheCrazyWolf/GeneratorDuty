@@ -1,4 +1,5 @@
-﻿using GeneratorDuty.Database;
+﻿using System.Collections;
+using GeneratorDuty.Database;
 using GeneratorDuty.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,11 @@ public class SchedulePropsRepository(DutyContext ef)
     public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromChat(long chatId)
     {
         return await ef.ScheduleProps.Where(x=> x.IdPeer == chatId).ToListAsync();
+    }
+    
+    public async Task<ScheduleProp?> GetSchedulePropFromChat(long chatId)
+    {
+        return await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == chatId);
     }
     
     public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromAutoSend(bool isConfiguredAutoSend)
@@ -44,5 +50,10 @@ public class SchedulePropsRepository(DutyContext ef)
     {
         ef.Remove(scheduleProp);
         await ef.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ScheduleProp>> GetScheduleProps()
+    {
+        return await ef.ScheduleProps.ToListAsync();
     }
 }

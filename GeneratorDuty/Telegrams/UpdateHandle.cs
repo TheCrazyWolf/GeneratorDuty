@@ -4,6 +4,7 @@ using GeneratorDuty.Commands;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
+using GeneratorDuty.Repository;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -11,7 +12,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Telegrams;
 
-public class UpdateHandle(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandler
+public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk) : IUpdateHandler
 {
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {

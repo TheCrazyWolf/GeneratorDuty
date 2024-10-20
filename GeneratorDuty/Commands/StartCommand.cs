@@ -1,5 +1,6 @@
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
+using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
@@ -27,13 +28,6 @@ public class StartCommand() : BaseCommand
                               "🍻 Отправлять команду только в ту беседу, где будут закрепляться расписание или дежурные\n\n" +
                               "Работает на костылях, так как написано на чистом энтузиазме. Сурсы найти сможете на гитхабе";
         
-        try
-        {
-            await client.SendTextMessageAsync(message.Chat.Id, startMessage, parseMode: ParseMode.Html);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        await client.TrySendMessage(message.Chat.Id, startMessage);
     }
 }

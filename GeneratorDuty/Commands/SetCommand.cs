@@ -7,13 +7,14 @@ using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
+using GeneratorDuty.Repository;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseCommand
+public class SetCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCommand
 {
     public override string Command { get; } = "/set";
 
@@ -33,7 +34,8 @@ public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseComman
         var anyCab = await clientSamgk.Cabs.GetCabAsync(message.Text);
         var anyTeacher = await clientSamgk.Accounts.GetTeacherAsync(message.Text);
 
-        await GetAndRemoveOlds(message.Chat.Id);
+        foreach (var prop in await ef.ScheduleProps.GetSchedulePropsFromChat(message.Chat.Id))
+            await ef.ScheduleProps.Remove(prop);
 
         string value = string.Empty;
 
@@ -46,9 +48,9 @@ public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseComman
 
 
         if (string.IsNullOrEmpty(value))
-            await client.SendTextMessageAsync(message.Chat.Id, "ℹ️ Ничего не нашли");
+            await client.TrySendMessage(message.Chat.Id, "ℹ️ Ничего не нашли");
         else
-            await client.SendTextMessageAsync(message.Chat.Id, $"✅ На эту беседу установлено: {value}");
+            await client.TrySendMessage(message.Chat.Id, $"✅ На эту беседу установлено: {value}");
     }
 
     private async Task<string> SetToDb(IResultOutGroup group, long peerId)
@@ -61,8 +63,7 @@ public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseComman
             Value = group.Id.ToString()
         };
 
-        await ef.AddAsync(prop);
-        await ef.SaveChangesAsync();
+        await ef.ScheduleProps.Create(prop);
         return group.Name;
     }
 
@@ -76,8 +77,7 @@ public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseComman
             Value = teacher.Id.ToString()
         };
 
-        await ef.AddAsync(prop);
-        await ef.SaveChangesAsync();
+        await ef.ScheduleProps.Create(prop);
         return teacher.Name;
     }
 
@@ -91,21 +91,7 @@ public class SetCommand(DutyContext ef, ClientSamgkApi clientSamgk) : BaseComman
             Value = cab.Adress
         };
 
-        await ef.AddAsync(prop);
-        await ef.SaveChangesAsync();
+        await ef.ScheduleProps.Create(prop);
         return cab.Adress;
     }
-
-    private async Task GetAndRemoveOlds(long peerId)
-    {
-        foreach (var item in await ef.ScheduleProps
-                     .Where(x => x.IdPeer == peerId)
-                     .ToListAsync())
-        {
-            ef.Remove(item);
-        }
-
-        await ef.SaveChangesAsync();
-    }
-    
 }

@@ -16,6 +16,12 @@ public class LogMemberPriority(DutyContext ef)
         return await ef.LogDutyMemberPriorities.Where(x=> x.UserId == id).ToListAsync();
     }
     
+    public async Task<List<LogDutyMemberPriority>> GetLogsFromChatId(long id)
+    {
+        return await ef.LogDutyMemberPriorities
+            .Include(x=> x.Duty).Where(x=> x.Duty!.IdPeer == id).ToListAsync();
+    }
+    
     public async Task<LogMemberPriority> Create(LogMemberPriority log)
     {
         await ef.AddAsync(log);
