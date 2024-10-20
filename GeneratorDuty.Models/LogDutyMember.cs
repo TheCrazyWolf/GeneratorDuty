@@ -7,5 +7,5 @@ public class LogDutyMember : CommonEntity
 {
     public long? UserId { get; set; }
     [ForeignKey("UserId")]public MemberDuty? Duty { get; set; }
-    public DateOnly Date { get; set; }
+    public DateTime Date { get; set; }
 }
