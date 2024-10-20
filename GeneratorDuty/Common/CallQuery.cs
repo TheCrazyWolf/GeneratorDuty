@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace GeneratorDuty.CallBackKeyboards;
+namespace GeneratorDuty.Common;
 
 public abstract class CallQuery
 {

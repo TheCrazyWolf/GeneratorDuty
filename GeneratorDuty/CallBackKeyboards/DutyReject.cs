@@ -1,4 +1,5 @@
-﻿using GeneratorDuty.Extensions;
+﻿using GeneratorDuty.Common;
+using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Services;

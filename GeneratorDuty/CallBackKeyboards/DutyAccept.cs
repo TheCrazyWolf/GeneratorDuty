@@ -1,4 +1,5 @@
-﻿using GeneratorDuty.Database;
+﻿using GeneratorDuty.Common;
+using GeneratorDuty.Database;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
 using Microsoft.EntityFrameworkCore;
