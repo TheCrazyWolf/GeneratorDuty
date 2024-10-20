@@ -44,7 +44,7 @@ namespace GeneratorDuty.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LogDutyMemberLosts",
+                name: "LogDutyMemberPriorities",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
@@ -53,9 +53,9 @@ namespace GeneratorDuty.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LogDutyMemberLosts", x => x.Id);
+                    table.PrimaryKey("PK_LogDutyMemberPriorities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LogDutyMemberLosts_MemberDuties_UserId",
+                        name: "FK_LogDutyMemberPriorities_MemberDuties_UserId",
                         column: x => x.UserId,
                         principalTable: "MemberDuties",
                         principalColumn: "Id",
@@ -83,8 +83,8 @@ namespace GeneratorDuty.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_LogDutyMemberLosts_UserId",
-                table: "LogDutyMemberLosts",
+                name: "IX_LogDutyMemberPriorities_UserId",
+                table: "LogDutyMemberPriorities",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -97,7 +97,7 @@ namespace GeneratorDuty.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "LogDutyMemberLosts");
+                name: "LogDutyMemberPriorities");
 
             migrationBuilder.DropTable(
                 name: "LogDutyMembers");

@@ -10,7 +10,7 @@ public sealed class DutyContext : DbContext
     public DbSet<MemberDuty> MemberDuties { get; set; }
     public DbSet<ScheduleProp> ScheduleProps { get; set; }
     public DbSet<LogDutyMember> LogDutyMembers { get; set; }
-    public DbSet<LogDutyMemberPriority> LogDutyMemberLosts { get; set; }
+    public DbSet<LogDutyMemberPriority> LogDutyMemberPriorities { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

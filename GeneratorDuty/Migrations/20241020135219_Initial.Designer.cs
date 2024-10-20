@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GeneratorDuty.Migrations
 {
     [DbContext(typeof(DutyContext))]
-    [Migration("20241020130305_Initial")]
+    [Migration("20241020135219_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -39,7 +39,7 @@ namespace GeneratorDuty.Migrations
                     b.ToTable("LogDutyMembers");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMemberLost", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMemberPriority", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace GeneratorDuty.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LogDutyMemberLosts");
+                    b.ToTable("LogDutyMemberPriorities");
                 });
 
             modelBuilder.Entity("GeneratorDuty.Models.MemberDuty", b =>
@@ -114,7 +114,7 @@ namespace GeneratorDuty.Migrations
                     b.Navigation("Duty");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMemberLost", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMemberPriority", b =>
                 {
                     b.HasOne("GeneratorDuty.Models.MemberDuty", "Duty")
                         .WithMany()

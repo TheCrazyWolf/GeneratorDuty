@@ -34,7 +34,7 @@ public class DutyAccept(DutyContext ef) : CallQuery
 
     private async Task Amnesty(long idMember)
     {
-        var fails = await ef.LogDutyMemberLosts.Where(x => x.UserId == idMember).ToListAsync();
+        var fails = await ef.LogDutyMemberPriorities.Where(x => x.UserId == idMember).ToListAsync();
 
         foreach (var item in fails)
         {
