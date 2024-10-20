@@ -17,4 +17,16 @@ public static class TelegramExtensions
             Console.WriteLine();
         }
     }
+    
+    public static async Task TryDeleteMessage(this ITelegramBotClient client, long chatId, int messageId)
+    {
+        try
+        {
+            await client.DeleteMessageAsync(chatId, messageId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine();
+        }
+    }
 }

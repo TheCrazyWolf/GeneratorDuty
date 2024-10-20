@@ -11,7 +11,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Commands;
 
-public class TomorrowCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCommand
+public class TomorrowCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
 {
     public override string Command { get; } = "/tomorrow";
 
@@ -21,7 +21,7 @@ public class TomorrowCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : Ba
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
-        var prop = await ef.ScheduleProps.GetSchedulePropFromChat(message.Chat.Id);
+        var prop = await repository.ScheduleProps.GetSchedulePropFromChat(message.Chat.Id);
         
         if(prop is null)
         {

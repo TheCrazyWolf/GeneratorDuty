@@ -9,7 +9,7 @@ using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class UpdateCommand(DutyRepository ef) : BaseCommand
+public class UpdateCommand(DutyRepository repository) : BaseCommand
 {
     public override string Command { get; } = "/update";
 
@@ -26,8 +26,8 @@ public class UpdateCommand(DutyRepository ef) : BaseCommand
             return;
         }
 
-        foreach (var member in await ef.Members.GetMembersFromChat(message.Chat.Id))
-            await ef.Members.Remove(member);
+        foreach (var member in await repository.Members.GetMembersFromChat(message.Chat.Id))
+            await repository.Members.Remove(member);
         
         var countResult = await AddNewDuty(membersArray, message.Chat.Id);
         await client.TrySendMessage(message.Chat.Id, $"✅ Обновили список группы: {countResult}");
@@ -40,7 +40,7 @@ public class UpdateCommand(DutyRepository ef) : BaseCommand
         {
             if(string.IsNullOrEmpty(item)) continue;
 
-            await ef.Members.Create(new MemberDuty
+            await repository.Members.Create(new MemberDuty
             {
                 IdPeer = peerId,
                 MemberNameDuty = item

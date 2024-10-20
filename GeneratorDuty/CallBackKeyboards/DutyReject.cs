@@ -1,12 +1,12 @@
-﻿using GeneratorDuty.Commands;
-using GeneratorDuty.Database;
+﻿using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
-using Microsoft.EntityFrameworkCore;
+using GeneratorDuty.Repository;
+using GeneratorDuty.Services;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 namespace GeneratorDuty.CallBackKeyboards;
 
-public class DutyReject(DutyContext ef) : CallQuery
+public class DutyReject(DutyRepository repository, MemoryExceptionDuty cache) : CallQuery
 {
     public override string Name { get; set; } = "duty_reject";
 
@@ -16,20 +16,19 @@ public class DutyReject(DutyContext ef) : CallQuery
         if (callbackQuery.Message is null || array is null || array.Length == 0 ||
             !long.TryParse(array[0], out var idMemberDuty)) return;
 
-        var memberDuty = await ef.MemberDuties.FirstOrDefaultAsync(x => x.Id == idMemberDuty);
+        var memberDuty = await repository.Members.GetMemberDuty(idMemberDuty);
         if (memberDuty is null) return;
 
-        GetCommand.Cache.AddMemberDuty(memberDuty);
-        
-        await ef.AddAsync(new LogDutyMemberPriority
+        cache.AddMemberDuty(memberDuty);
+
+        await repository.LogsMemberPriority.Create(new LogDutyMemberPriority
         {
             UserId = memberDuty.Id,
         });
-        await ef.SaveChangesAsync();
 
-        await client.SendTextMessageAsync(callbackQuery.Message.Chat.Id,
+        await client.TrySendMessage(callbackQuery.Message.Chat.Id,
             $"О как.. Я запомнил, что {memberDuty.MemberNameDuty} сегодня нет. В следующий раз, заставлю отдежурить 😈");
         
-        await client.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+        await client.TryDeleteMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
     }
 }

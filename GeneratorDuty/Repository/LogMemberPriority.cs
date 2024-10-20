@@ -22,21 +22,21 @@ public class LogMemberPriority(DutyContext ef)
             .Include(x=> x.Duty).Where(x=> x.Duty!.IdPeer == id).ToListAsync();
     }
     
-    public async Task<LogMemberPriority> Create(LogMemberPriority log)
+    public async Task<LogDutyMemberPriority> Create(LogDutyMemberPriority log)
     {
         await ef.AddAsync(log);
         await ef.SaveChangesAsync();
         return log;
     }
 
-    public async Task<LogMemberPriority> Update(LogMemberPriority log)
+    public async Task<LogDutyMemberPriority> Update(LogDutyMemberPriority log)
     {
         ef.Update(log);
         await ef.SaveChangesAsync();
         return log;
     }
 
-    public async Task Remove(LogMemberPriority log)
+    public async Task Remove(LogDutyMemberPriority log)
     {
         ef.Remove(log);
         await ef.SaveChangesAsync();

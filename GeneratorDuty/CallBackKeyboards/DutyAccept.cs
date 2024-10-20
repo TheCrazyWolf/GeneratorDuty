@@ -1,5 +1,6 @@
 ﻿using GeneratorDuty.Database;
 using GeneratorDuty.Models;
+using GeneratorDuty.Repository;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -7,7 +8,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace GeneratorDuty.CallBackKeyboards;
 
-public class DutyAccept(DutyContext ef) : CallQuery
+public class DutyAccept(DutyRepository repository) : CallQuery
 {
     public override string Name { get; set; } = "duty_accept";
 
@@ -17,30 +18,19 @@ public class DutyAccept(DutyContext ef) : CallQuery
         if (callbackQuery.Message is null || array is null || array.Length == 0 ||
             !long.TryParse(array[0], out var idMemberDuty)) return;
 
-        var memberDuty = await ef.MemberDuties.FirstOrDefaultAsync(x => x.Id == idMemberDuty);
+        var memberDuty = await repository.Members.GetMemberDuty(idMemberDuty);
         if (memberDuty is null) return;
 
-        await ef.AddAsync(new LogDutyMember
+        await repository.LogsMembers.Create(new LogDutyMember
         {
             UserId = memberDuty.Id,
             Date = DateTime.Now
         });
-        await ef.SaveChangesAsync();
-        await Amnesty(memberDuty.Id);
-
+        
+        foreach (var member in await repository.LogsMemberPriority.GetLogsByIdMember(idMemberDuty))
+            await repository.LogsMemberPriority.Remove(member);
+        
         await client.EditMessageReplyMarkupAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId,
             replyMarkup: null);
-    }
-
-    private async Task Amnesty(long idMember)
-    {
-        var fails = await ef.LogDutyMemberPriorities.Where(x => x.UserId == idMember).ToListAsync();
-
-        foreach (var item in fails)
-        {
-            ef.Remove(item);
-        }
-
-        await ef.SaveChangesAsync();
     }
 }

@@ -4,17 +4,15 @@ using ClientSamgkOutputResponse.Interfaces.Cabs;
 using ClientSamgkOutputResponse.Interfaces.Groups;
 using ClientSamgkOutputResponse.Interfaces.Identity;
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class SetCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCommand
+public class SetCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
 {
     public override string Command { get; } = "/set";
 
@@ -34,8 +32,8 @@ public class SetCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCom
         var anyCab = await clientSamgk.Cabs.GetCabAsync(message.Text);
         var anyTeacher = await clientSamgk.Accounts.GetTeacherAsync(message.Text);
 
-        foreach (var prop in await ef.ScheduleProps.GetSchedulePropsFromChat(message.Chat.Id))
-            await ef.ScheduleProps.Remove(prop);
+        foreach (var prop in await repository.ScheduleProps.GetSchedulePropsFromChat(message.Chat.Id))
+            await repository.ScheduleProps.Remove(prop);
 
         string value = string.Empty;
 
@@ -63,7 +61,7 @@ public class SetCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCom
             Value = group.Id.ToString()
         };
 
-        await ef.ScheduleProps.Create(prop);
+        await repository.ScheduleProps.Create(prop);
         return group.Name;
     }
 
@@ -77,7 +75,7 @@ public class SetCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCom
             Value = teacher.Id.ToString()
         };
 
-        await ef.ScheduleProps.Create(prop);
+        await repository.ScheduleProps.Create(prop);
         return teacher.Name;
     }
 
@@ -91,7 +89,7 @@ public class SetCommand(DutyRepository ef, ClientSamgkApi clientSamgk) : BaseCom
             Value = cab.Adress
         };
 
-        await ef.ScheduleProps.Create(prop);
+        await repository.ScheduleProps.Create(prop);
         return cab.Adress;
     }
 }

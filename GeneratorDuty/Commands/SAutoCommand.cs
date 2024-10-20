@@ -10,7 +10,7 @@ using Telegram.Bot.Types;
 
 namespace GeneratorDuty.Commands;
 
-public class SAutoCommand(DutyRepository ef) : BaseCommand
+public class SAutoCommand(DutyRepository repository) : BaseCommand
 {
     public override string Command { get; } = "/sauto";
     
@@ -23,8 +23,8 @@ public class SAutoCommand(DutyRepository ef) : BaseCommand
 
         if (message.Text.Contains("clear"))
         {
-            foreach (var prop in await ef.ScheduleProps.GetSchedulePropsFromAutoExport(true))
-                await ef.ScheduleProps.Remove(prop);
+            foreach (var prop in await repository.ScheduleProps.GetSchedulePropsFromAutoExport(true))
+                await repository.ScheduleProps.Remove(prop);
             
             await client.TrySendMessage(message.Chat.Id, "ℹ️ Специальные сценарии очищены");
             return;
@@ -34,7 +34,7 @@ public class SAutoCommand(DutyRepository ef) : BaseCommand
         {
             var array = message.Text.Split(' ');
             var searchType = ConvertToType(array[1]);
-            await ef.ScheduleProps.Create(new ScheduleProp { IdPeer = message.Chat.Id, IsAutoExport = true, SearchType = searchType} );
+            await repository.ScheduleProps.Create(new ScheduleProp { IdPeer = message.Chat.Id, IsAutoExport = true, SearchType = searchType} );
             
             await client.TrySendMessage(message.Chat.Id, $"✅ К этой беседе добавили автоэкспорт: {searchType}");
         }

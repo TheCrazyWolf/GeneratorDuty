@@ -5,6 +5,7 @@ using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Services;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -12,12 +13,12 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Telegrams;
 
-public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk) : IUpdateHandler
+public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryExceptionDuty cache) : IUpdateHandler
 {
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {
         new SetCommand(ef, clientSamgk),
-        new GetCommand(ef),
+        new GetCommand(ef,cache),
         new UpdateCommand(ef),
         new TodayCommand(ef, clientSamgk),
         new TomorrowCommand(ef, clientSamgk),
@@ -31,7 +32,7 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk) : IUpda
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
     {
-        new DutyAccept(ef), new DutyReject(ef)
+        new DutyAccept(ef), new DutyReject(ef, cache)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
