@@ -42,9 +42,9 @@ public class GetCommand(DutyContext ef) : BaseCommand
         
         /* Не пришедшие в прошлый раз */
         
-        var lostedMembers = await GetLostsFromChat(message.Chat.Id);
+        var memberPriorities = await GetPriorityMembersFromChat(message.Chat.Id);
 
-        foreach (var member in lostedMembers)
+        foreach (var member in memberPriorities)
         {
             var foundInHistory = await FoundInHistory(member.Duty!);
             if (foundInHistory is not null) continue;
@@ -95,14 +95,13 @@ public class GetCommand(DutyContext ef) : BaseCommand
     }
 
     // Выгрузка тех, кто попал на дежурство, но отдежурил
-    private async Task<List<LogDutyMemberPriority>> GetLostsFromChat(long chatId)
+    private async Task<List<LogDutyMemberPriority>> GetPriorityMembersFromChat(long chatId)
     { 
         var list = await ef.LogDutyMemberLosts
             .Include(x => x.Duty)
             .Where(x => x.Duty!.IdPeer == chatId)
             .ToListAsync();
-
-
+        
         foreach (var member in Cache.GetFromChats(chatId).ToList())
         {
             foreach (var log in list.Where(x => x.Duty!.Id == member.Id).ToList())
@@ -128,7 +127,7 @@ public class GetCommand(DutyContext ef) : BaseCommand
         {
             new List<InlineKeyboardButton>
             {
-                InlineKeyboardButton.WithCallbackData("🖌 Отдежурил",
+                InlineKeyboardButton.WithCallbackData("✅ Дежурит",
                     $"duty_accept {dutyId}"),
                 InlineKeyboardButton.WithCallbackData("❌ Его нет",
                     $"duty_reject {dutyId}")
