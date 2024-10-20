@@ -36,7 +36,7 @@ public class MemoryExceptionDuty
         var toBeDeleted = _memberDuties
             .Where(x=> (DateTime.Now - x.DateTimeAdded).TotalDays >= 1);
 
-        foreach (var item in toBeDeleted)
+        foreach (var item in toBeDeleted.ToList())
             _memberDuties.Remove(item);
     }
 }
