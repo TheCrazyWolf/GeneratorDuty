@@ -1,6 +1,6 @@
-namespace GeneratorDuty.Services;
+namespace GeneratorDuty.Extensions;
 
-public static class CommandStingUtils
+public static class StringExtensions
 {
     public static string Me = "";
     private static string _botDomain = $"@{Me}";

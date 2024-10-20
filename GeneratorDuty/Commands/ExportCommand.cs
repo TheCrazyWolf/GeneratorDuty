@@ -2,7 +2,7 @@ using ClientSamgk;
 using ClientSamgk.Enums;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
-using GeneratorDuty.Services;
+using GeneratorDuty.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;

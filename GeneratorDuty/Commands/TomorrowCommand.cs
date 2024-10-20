@@ -1,7 +1,7 @@
 using ClientSamgk;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
-using GeneratorDuty.Services;
+using GeneratorDuty.Extensions;
 using GeneratorDuty.Utils;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;

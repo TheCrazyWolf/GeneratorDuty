@@ -1,7 +1,7 @@
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
+using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
-using GeneratorDuty.Services;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
