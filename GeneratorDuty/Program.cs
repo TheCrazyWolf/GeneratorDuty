@@ -8,8 +8,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 
-
-
 var builder = Host.CreateApplicationBuilder(args);
 
 builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
