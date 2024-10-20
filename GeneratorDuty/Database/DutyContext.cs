@@ -16,4 +16,19 @@ public sealed class DutyContext : DbContext
     {
         optionsBuilder.UseSqlite("Data Source = app.db");
     }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LogDutyMember>()
+            .HasOne(ldm => ldm.Duty)
+            .WithMany()
+            .HasForeignKey(ldm => ldm.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+        
+        modelBuilder.Entity<LogDutyMemberLost>()
+            .HasOne(ldm => ldm.Duty)
+            .WithMany()
+            .HasForeignKey(ldm => ldm.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+    }
 }
