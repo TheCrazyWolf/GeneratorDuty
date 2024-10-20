@@ -28,7 +28,7 @@ public class DutyReject(DutyContext ef) : CallQuery
         await ef.SaveChangesAsync();
 
         await client.SendTextMessageAsync(callbackQuery.Message.Chat.Id,
-            $"❎ Записал себе в тетрадочку, что {memberDuty.MemberNameDuty} сегодня нет. В следующий раз, он будет в приоритете на дежурству");
+            $"О как.. Я запомнил, что {memberDuty.MemberNameDuty} сегодня нет. В следующий раз, заставлю отдежурить 😈");
         
         await client.DeleteMessageAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
     }

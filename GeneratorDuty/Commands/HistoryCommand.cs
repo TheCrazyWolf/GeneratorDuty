@@ -23,7 +23,7 @@ public class HistoryCommand(DutyContext ef) : BaseCommand
             .Where(x => x.IdPeer == message.Chat.Id)
             .ToListAsync();
 
-        string messageToBeSend = "Студент | Код последний раз дежурил\n";
+        string messageToBeSend = "Студент | Дата дежурства\n";
         
         foreach (var item in mainList)
         {

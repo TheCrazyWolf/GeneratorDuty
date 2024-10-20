@@ -49,7 +49,7 @@ public class GetCommand(DutyContext ef) : BaseCommand
             var foundInHistory = await FoundInHistory(member.Duty!);
             if (foundInHistory is not null) continue;
             
-            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Я помню, как кое-то убежал от меня. Время настало. Дежурит: {member.Duty?.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(member.Duty!.Id)));
+            await client.SendTextMessageAsync(message.Chat.Id, $"Я надеюсь, сегодня то {member.Duty?.MemberNameDuty} пришел? За тобой должок остался", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(member.Duty!.Id)));
             return;
         }
         
@@ -71,7 +71,7 @@ public class GetCommand(DutyContext ef) : BaseCommand
         if (listNonDutiesLast.Count is 0 && mainList.Count is not 0)
         {
             var memberDutyForce = mainList[rnd.Next(0, mainList.Count)];
-            await client.SendTextMessageAsync(message.Chat.Id, $"✅ О как! Все отдежурили за последние 14 дней?))\n\n Ха-ха, никак не помешает мне выбрать. Дежурит: {memberDutyForce.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDutyForce.Id)));
+            await client.SendTextMessageAsync(message.Chat.Id, $"Какие Вы мега-шустрые или у Вас маленькая группа. За последние 14 дней, все успели отдежурить. Выбираем случайного: {memberDutyForce.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDutyForce.Id)));
             return;
         }
 
@@ -84,12 +84,12 @@ public class GetCommand(DutyContext ef) : BaseCommand
         if (listNonDutiesLast.Count is 0 && mainList.Count is not 0)
         {
             var memberDuty = mainList[rnd.Next(0, mainList.Count)];
-            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Произошел самый тяжелый случай. Никого нет, все болеют, а те кто есть, уже дежурили, но выбрать все же кого то надо.. Сегодня дежурит: {memberDuty.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
+            await client.SendTextMessageAsync(message.Chat.Id, $"Произошел самый тяжелый случай. Никого нет, все болеют, а те кто есть, уже дежурили, но выбрать все же кого то надо.. Сегодня дежурит: {memberDuty.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
         }
         else
         {
             var memberDuty = listNonDutiesLast[rnd.Next(0, listNonDutiesLast.Count)];
-            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Сегодня дежурит: {memberDuty.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
+            await client.SendTextMessageAsync(message.Chat.Id, $"Вжух и пух, выбираю дежурить: {memberDuty.MemberNameDuty}. ", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
         }
         
     }
@@ -127,9 +127,9 @@ public class GetCommand(DutyContext ef) : BaseCommand
         {
             new List<InlineKeyboardButton>
             {
-                InlineKeyboardButton.WithCallbackData("✅ Дежурит",
+                InlineKeyboardButton.WithCallbackData("✅ Принять",
                     $"duty_accept {dutyId}"),
-                InlineKeyboardButton.WithCallbackData("❌ Его нет",
+                InlineKeyboardButton.WithCallbackData("❌ Отсутствует",
                     $"duty_reject {dutyId}")
             },
         };
