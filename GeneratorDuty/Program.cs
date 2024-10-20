@@ -24,9 +24,9 @@ builder.Services.AddHostedService<PollingService>();
 builder.Services.AddDbContext<DutyContext>();
 builder.Services.AddSingleton<ClientSamgkApi>();
 builder.Services.AddSingleton<MemoryExceptionDuty>();
+builder.Services.AddTransient<DutyRepository>();
 builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
-builder.Services.AddTransient<DutyRepository>();
 
 var host = builder.Build();
 host.Run();
