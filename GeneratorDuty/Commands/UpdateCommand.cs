@@ -26,8 +26,8 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
         }
         
         await GetAndRemoveOlds(message.Chat.Id);
-        await AddNewDuty(membersArray, message.Chat.Id);
-        await client.SendTextMessageAsync(message.Chat.Id, $"✅ Обновили список группы: {membersArray.Length}");
+        var countResult = await AddNewDuty(membersArray, message.Chat.Id);
+        await client.SendTextMessageAsync(message.Chat.Id, $"✅ Обновили список группы: {countResult}");
     }
 
     private async Task GetAndRemoveOlds(long peerId)
@@ -42,8 +42,9 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
         await ef.SaveChangesAsync();
     }
 
-    private async Task AddNewDuty(IEnumerable<string> d, long peerId)
+    private async Task<int> AddNewDuty(IEnumerable<string> d, long peerId)
     {
+        int count = 0;
         foreach (var item in d)
         {
             if(string.IsNullOrEmpty(item)) continue;
@@ -53,8 +54,11 @@ public class UpdateCommand(DutyContext ef) : BaseCommand
                 IdPeer = peerId,
                 MemberNameDuty = item
             });
+            count++;
         }
 
         await ef.SaveChangesAsync();
+
+        return count;
     }
 }
