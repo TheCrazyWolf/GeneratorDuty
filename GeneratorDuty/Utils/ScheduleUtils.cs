@@ -23,6 +23,11 @@ public static class ScheduleUtils
             msg.AppendLine($"Каб: {cabs} • {lesson.EducationGroup.Name}</blockquote>");
         }
 
+        if (scheduleFromDate.Lessons.Count is 0)
+        {
+            msg.AppendLine($"\n<blockquote> Расписание еще не внесено</blockquote>");
+        }
+
         return msg.ToString();
     }
 }
