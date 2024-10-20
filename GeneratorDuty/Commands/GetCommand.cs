@@ -55,7 +55,7 @@ public class GetCommand(DutyContext ef) : BaseCommand
         
         /* ------ */
         
-        /* Не пришедшие в прошлый раз */
+        /* выборка из тех кто давно не дежурил з */
         
         var listNonDutiesLast = mainList.ToList();
         
@@ -114,12 +114,12 @@ public class GetCommand(DutyContext ef) : BaseCommand
         return list;
     }
     
-    // Поиск в истории дежурства за последние 7 дней
+    // Поиск в истории дежурства за последние 14 дней
     private async Task<LogDutyMember?> FoundInHistory(MemberDuty duty)
     {
         return await ef.LogDutyMembers
             .FirstOrDefaultAsync(x => x.UserId == duty.Id
-                                      && DateTime.Now.AddDays(-14) >= x.Date);
+                                      && DateTime.Now.AddDays(-14) <= x.Date);
     }
     
     private IList<IList<InlineKeyboardButton>> GenerateKeyboardForNotify(long dutyId)
