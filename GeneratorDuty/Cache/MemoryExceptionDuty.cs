@@ -8,8 +8,13 @@ public class MemoryExceptionDuty
 
     public void AddMemberDuty(MemberDuty memberDuty)
     {
-        var upcast = (MemberDutyException)memberDuty;
-        upcast.DateTimeAdded = DateTime.Now;
+        var upcast = new MemberDutyException()
+        {
+            Id = memberDuty.Id,
+            IdPeer = memberDuty.IdPeer,
+            MemberNameDuty = memberDuty.MemberNameDuty,
+            DateTimeAdded = DateTime.Now
+        };
         _memberDuties.Add(upcast);
         RefreshMemberDuties();
     }
