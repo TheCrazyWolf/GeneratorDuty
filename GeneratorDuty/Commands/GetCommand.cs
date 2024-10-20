@@ -47,9 +47,9 @@ public class GetCommand(DutyContext ef) : BaseCommand
         foreach (var member in lostedMembers)
         {
             var foundInHistory = await FoundInHistory(member.Duty!);
-            if(foundInHistory is not null) continue;
+            if (foundInHistory is not null) continue;
             
-            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Я помню, как кое-то убежал от меня. Время настало. Дежурит: {member.Duty?.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(member.Id)));
+            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Я помню, как кое-то убежал от меня. Время настало. Дежурит: {member.Duty?.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(member.Duty!.Id)));
             return;
         }
         
@@ -99,17 +99,18 @@ public class GetCommand(DutyContext ef) : BaseCommand
     { 
         var list = await ef.LogDutyMemberLosts
             .Include(x => x.Duty)
-            .Where(x => x.Duty!.IdPeer == chatId
-                        && x.Date >= DateTime.Now.AddDays(-14))
+            .Where(x => x.Duty!.IdPeer == chatId)
             .ToListAsync();
 
-        foreach (var found in Cache.GetFromChats(chatId)
-                     .Select(item => list.FirstOrDefault(x => x.Id == item.Id))
-                     .OfType<LogDutyMemberLost>())
-        {
-            list.Remove(found);
-        }
 
+        foreach (var member in Cache.GetFromChats(chatId).ToList())
+        {
+            foreach (var log in list.Where(x => x.Duty!.Id == member.Id).ToList())
+            {
+                list.Remove(log);
+            }
+        }
+        
         return list;
     }
     
@@ -118,7 +119,7 @@ public class GetCommand(DutyContext ef) : BaseCommand
     {
         return await ef.LogDutyMembers
             .FirstOrDefaultAsync(x => x.UserId == duty.Id
-                                      && x.Date >= DateTime.Now.AddDays(-14));
+                                      && DateTime.Now.AddDays(-14) >= x.Date);
     }
     
     private IList<IList<InlineKeyboardButton>> GenerateKeyboardForNotify(long dutyId)
