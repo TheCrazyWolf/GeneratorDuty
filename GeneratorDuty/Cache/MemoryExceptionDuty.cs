@@ -1,0 +1,42 @@
+﻿using GeneratorDuty.Models;
+
+namespace GeneratorDuty.Cache;
+
+public class MemoryExceptionDuty
+{
+    private readonly List<MemberDutyException> _memberDuties = new List<MemberDutyException>();
+
+    public void AddMemberDuty(MemberDuty memberDuty)
+    {
+        var upcast = (MemberDutyException)memberDuty;
+        upcast.DateTimeAdded = DateTime.Now;
+        _memberDuties.Add(upcast);
+        RefreshMemberDuties();
+    }
+    
+    public void AddMemberDuty(MemberDutyException memberDuty)
+    {
+        _memberDuties.Add(memberDuty);
+        RefreshMemberDuties();
+    }
+
+    public List<MemberDutyException> GetFromChats(long chatId)
+    {
+        RefreshMemberDuties();
+        return _memberDuties.Where(x=> x.IdPeer == chatId).ToList();
+    }
+
+    private void RefreshMemberDuties()
+    {
+        var toBeDeleted = _memberDuties
+            .Where(x=> (DateTime.Now - x.DateTimeAdded).TotalDays >= 1);
+
+        foreach (var item in toBeDeleted)
+            _memberDuties.Remove(item);
+    }
+}
+
+public class MemberDutyException : MemberDuty
+{
+    public DateTime DateTimeAdded { get; set; }
+}
