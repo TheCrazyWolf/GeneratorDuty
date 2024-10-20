@@ -1,4 +1,5 @@
-﻿using GeneratorDuty.Common;
+﻿using GeneratorDuty.Commands;
+using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
@@ -31,5 +32,8 @@ public class DutyReject(DutyRepository repository, MemoryExceptionDuty cache) : 
             $"О как.. Я запомнил, что {memberDuty.MemberNameDuty} сегодня нет. В следующий раз, заставлю отдежурить 😈");
         
         await client.TryDeleteMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+
+        GetCommand command = new(repository, cache);
+        await command.ExecuteAsync(client,callbackQuery.Message);
     }
 }
