@@ -1,5 +1,6 @@
 ﻿using System.Timers;
 using ClientSamgk;
+using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Utils;
 using Microsoft.Extensions.Hosting;
@@ -46,14 +47,10 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
 
             if (item.LastResult == newResult) continue;
                 
-            try
-            {
-                await client.SendTextMessageAsync(item.IdPeer, newResult, parseMode: ParseMode.Html);
-                item.LastResult = newResult;
-                await repository.ScheduleProps.Update(item);
-            }
-            catch { //
-            }
+            await client.TrySendMessage(item.IdPeer, newResult);
+            item.LastResult = newResult;
+            await repository.ScheduleProps.Update(item);
+            await Task.Delay(1000);
         }
     }
     

@@ -3,6 +3,7 @@ using ClientSamgk;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
+using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
@@ -32,29 +33,23 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
         foreach (var item in scheduleProps.Where(item => item.LastResult
                                                          != DateTime.Now.ToString("yyyy-MM-dd")))
         {
-            try
-            {
-                var builderSchedule = new HtmlBuilderSchedule();
+            var builderSchedule = new HtmlBuilderSchedule();
 
-                var allExportResult = await clientSamgkApi.Schedule
-                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
+            var allExportResult = await clientSamgkApi.Schedule
+                .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
 
-                if (allExportResult.Count is 0) continue;
+            if (allExportResult.Count is 0) continue;
 
-                foreach (var scheduleFromDate in allExportResult)
-                    builderSchedule.AddRow(scheduleFromDate, item.SearchType);
+            foreach (var scheduleFromDate in allExportResult)
+                builderSchedule.AddRow(scheduleFromDate, item.SearchType);
 
-                await client.SendDocumentAsync(item.IdPeer,
-                    new InputFileStream(builderSchedule.GetStreamFile(),
-                        $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
+            await client.TrySendDocument(item.IdPeer,
+                new InputFileStream(builderSchedule.GetStreamFile(),
+                    $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
 
-                item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
-                await repository.ScheduleProps.Update(item);
-            }
-            catch
-            {
-                //
-            }
+            item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
+            await repository.ScheduleProps.Update(item);
+            await Task.Delay(1000);
         }
     }
     

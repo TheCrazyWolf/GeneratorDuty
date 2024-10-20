@@ -1,4 +1,5 @@
 ﻿using Telegram.Bot;
+using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
@@ -23,6 +24,18 @@ public static class TelegramExtensions
         try
         {
             await client.DeleteMessageAsync(chatId, messageId);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine();
+        }
+    }
+    
+    public static async Task TrySendDocument(this ITelegramBotClient client, long chatId, InputFile file)
+    {
+        try
+        {
+            await client.SendDocumentAsync(chatId, file);
         }
         catch (Exception e)
         {
