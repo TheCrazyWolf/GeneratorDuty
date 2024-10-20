@@ -13,7 +13,6 @@ public class GetCommand(DutyContext ef) : BaseCommand
 {
     public static MemoryExceptionDuty Cache { get; set; } = new ();
     
-    private readonly Random _rnd = new Random();
     public override string Command { get; } = "/get";
     
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
@@ -67,16 +66,32 @@ public class GetCommand(DutyContext ef) : BaseCommand
             listNonDutiesLast.Remove(member);
         }
         
+        Random rnd = new Random();
+        
         if (listNonDutiesLast.Count is 0 && mainList.Count is not 0)
         {
-            var memberDutyForce = mainList[_rnd.Next(0, mainList.Count)];
-            await client.SendTextMessageAsync(message.Chat.Id, $"ℹ️ Что? Якобы все отдежурили за последние 7 дней?)) Ха-ха, никак не помешает мне выбрать: {memberDutyForce.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDutyForce.Id)));
+            var memberDutyForce = mainList[rnd.Next(0, mainList.Count)];
+            await client.SendTextMessageAsync(message.Chat.Id, $"✅ О как! Все отдежурили за последние 14 дней?))\n\n Ха-ха, никак не помешает мне выбрать. Дежурит: {memberDutyForce.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDutyForce.Id)));
+            return;
+        }
+
+        if (listNonDutiesLast.Count is 0 && mainList.Count is 0)
+        {
+            await client.SendTextMessageAsync(message.Chat.Id, $"Самый редкий случай: Все заболели, все дежурили за последние 14 дней. Выбрать некого :с");
             return;
         }
         
-        var memberDuty = listNonDutiesLast[_rnd.Next(0, listNonDutiesLast.Count)];
+        if (listNonDutiesLast.Count is 0 && mainList.Count is not 0)
+        {
+            var memberDuty = mainList[rnd.Next(0, mainList.Count)];
+            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Произошел самый тяжелый случай. Никого нет, все болеют, а те кто есть, уже дежурили, но выбрать все же кого то надо.. Сегодня дежурит: {memberDuty.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
+        }
+        else
+        {
+            var memberDuty = listNonDutiesLast[rnd.Next(0, listNonDutiesLast.Count)];
+            await client.SendTextMessageAsync(message.Chat.Id, $"✅ Сегодня дежурит: {memberDuty.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
+        }
         
-        await client.SendTextMessageAsync(message.Chat.Id, $"✅ Сегодня дежурит: {memberDuty.MemberNameDuty}", replyMarkup: new InlineKeyboardMarkup(GenerateKeyboardForNotify(memberDuty.Id)));
     }
 
     // Выгрузка тех, кто попал на дежурство, но отдежурил
