@@ -1,4 +1,5 @@
 using ClientSamgk;
+using GeneratorDuty.CallBackKeyboards;
 using GeneratorDuty.Commands;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
@@ -24,6 +25,11 @@ public class MainPoll(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandl
         new StartCommand(),
         new SayCommand(ef)
     };
+
+    private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
+    {
+        new DutyAccept(ef), new DutyReject(ef)
+    };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
@@ -38,7 +44,17 @@ public class MainPoll(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandl
                 await command.ExecuteAsync(botClient, update.Message);
             }
         }
+
+        if (update.Type == UpdateType.CallbackQuery && update.CallbackQuery != null)
+        {
+            foreach (var item in _callQueries)
+            {
+                if(!item.Contains(update.CallbackQuery)) continue;
+                item.Execute(botClient, update.CallbackQuery);
+            }
+        }
     }
+    
 
     public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
     {
