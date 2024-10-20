@@ -1,8 +1,7 @@
 ﻿using ClientSamgk;
 using GeneratorDuty.BackgroundServices;
-using GeneratorDuty.Common;
+using GeneratorDuty.Cache;
 using GeneratorDuty.Database;
-using GeneratorDuty.Services;
 using GeneratorDuty.Telegrams;
 using GeneratorDuty.Telegrams.Implementations;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,31 +23,10 @@ builder.Services.AddScoped<UpdateHandle>();
 builder.Services.AddScoped<ReceiverService>();
 builder.Services.AddHostedService<PollingService>();
 builder.Services.AddDbContext<DutyContext>();
+builder.Services.AddSingleton<ClientSamgkApi>();
+builder.Services.AddSingleton<MemoryExceptionDuty>();
+builder.Services.AddHostedService<AutoSendSchedule>();
+builder.Services.AddHostedService<AutoSendScheduleExport>();
 
 var host = builder.Build();
 host.Run();
-
-string token = args.FirstOrDefault() ?? string.Empty;
-        
-if (string.IsNullOrWhiteSpace(token))
-    throw new Exception("Не указан токен");
-
-ITelegramBotClient botClient = new TelegramBotClient(token);
-
-ClientSamgkApi samgkApi = new ClientSamgkApi();
-
-IReadOnlyCollection<BaseTask> tasks = new List<BaseTask>
-{
-    new AutoSendSchedule(botClient, new DutyContext(), samgkApi),
-    new AutoSendScheduleExport(botClient, new DutyContext(), samgkApi)
-};
-
-var me = await botClient.GetMeAsync();
-CommandStingUtils.Me = me.Username ?? string.Empty;
-
-foreach (var task in tasks)
-    _ = task.RunAsync();
-
-await botClient.ReceiveAsync(new UpdateHandle(new DutyContext(), samgkApi));
-
-await Task.Delay(-1);

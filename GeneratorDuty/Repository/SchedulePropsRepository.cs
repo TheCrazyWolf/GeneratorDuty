@@ -16,6 +16,16 @@ public class SchedulePropsRepository(DutyContext ef)
         return await ef.ScheduleProps.Where(x=> x.IdPeer == chatId).ToListAsync();
     }
     
+    public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromAutoSend(bool isConfiguredAutoSend)
+    {
+        return await ef.ScheduleProps.Where(x=> x.IsAutoSend == isConfiguredAutoSend).ToListAsync();
+    }
+    
+    public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromAutoExport(bool isConfiguredAutoExport)
+    {
+        return await ef.ScheduleProps.Where(x=> x.IsAutoExport == isConfiguredAutoExport).ToListAsync();
+    }
+    
     public async Task<ScheduleProp> Create(ScheduleProp scheduleProp)
     {
         await ef.AddAsync(scheduleProp);

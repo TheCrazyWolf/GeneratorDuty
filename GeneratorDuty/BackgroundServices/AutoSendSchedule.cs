@@ -1,27 +1,21 @@
 ﻿using System.Timers;
 using ClientSamgk;
-using GeneratorDuty.Common;
-using GeneratorDuty.Database;
+using GeneratorDuty.Repository;
 using GeneratorDuty.Utils;
+using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Timer =  System.Timers.Timer;
 
 namespace GeneratorDuty.BackgroundServices;
 
-public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientSamgkApi clientSamgkApi) : BaseTask
+public class AutoSendSchedule(ITelegramBotClient client, DutyRepository repository, 
+    ClientSamgkApi clientSamgkApi) : BackgroundService
 {
     private readonly Timer _timer = new Timer
     {
         Interval = 300000, // 300000
     };
-    
-    public override Task RunAsync()
-    {
-        _timer.Elapsed += OnEventExecution;
-        _timer.Start();
-        return Task.CompletedTask;
-    }
 
     private async void OnEventExecution(object? sender, ElapsedEventArgs e)
     {
@@ -29,7 +23,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
         
         if(!CanWorkSerivce(DateTime.Now)) return;
         
-        var scheduleProps = ef.ScheduleProps.Where(x => x.IsAutoSend).ToList();
+        var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoSend(true);
         
         // если время вечернее смотрим расписание на перед
         if (dateTime.Hour >= 10)
@@ -56,8 +50,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
             {
                 await client.SendTextMessageAsync(item.IdPeer, newResult, parseMode: ParseMode.Html);
                 item.LastResult = newResult;
-                ef.Update(item);
-                await ef.SaveChangesAsync();
+                await repository.ScheduleProps.Update(item);
             }
             catch { //
             }
@@ -71,5 +64,12 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyContext ef, ClientS
             >= 19 or <= 7 => false,
             _ => true
         };
+    }
+
+    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _timer.Elapsed += OnEventExecution;
+        _timer.Start();
+        return Task.CompletedTask;
     }
 }
