@@ -23,7 +23,8 @@ public class MainPoll(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandl
         new ExportCommand(clientSamgk),
         new SAutoCommand(ef),
         new StartCommand(),
-        new SayCommand(ef)
+        new SayCommand(ef),
+        new HistoryCommand(ef)
     };
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
