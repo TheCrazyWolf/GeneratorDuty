@@ -21,7 +21,7 @@ public class DutyReject(DutyContext ef) : CallQuery
 
         GetCommand.Cache.AddMemberDuty(memberDuty);
         
-        await ef.AddAsync(new LogDutyMemberLost
+        await ef.AddAsync(new LogDutyMemberPriority
         {
             UserId = memberDuty.Id,
         });

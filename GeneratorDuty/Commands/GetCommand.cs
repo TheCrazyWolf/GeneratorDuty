@@ -95,7 +95,7 @@ public class GetCommand(DutyContext ef) : BaseCommand
     }
 
     // Выгрузка тех, кто попал на дежурство, но отдежурил
-    private async Task<List<LogDutyMemberLost>> GetLostsFromChat(long chatId)
+    private async Task<List<LogDutyMemberPriority>> GetLostsFromChat(long chatId)
     { 
         var list = await ef.LogDutyMemberLosts
             .Include(x => x.Duty)
