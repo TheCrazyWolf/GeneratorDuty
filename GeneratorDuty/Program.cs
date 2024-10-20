@@ -1,7 +1,8 @@
 ﻿using ClientSamgk;
 using GeneratorDuty.BackgroundServices;
-using GeneratorDuty.Cache;
 using GeneratorDuty.Database;
+using GeneratorDuty.Repository;
+using GeneratorDuty.Services;
 using GeneratorDuty.Telegrams;
 using GeneratorDuty.Telegrams.Implementations;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +26,7 @@ builder.Services.AddSingleton<ClientSamgkApi>();
 builder.Services.AddSingleton<MemoryExceptionDuty>();
 builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
+builder.Services.AddTransient<DutyRepository>();
 
 var host = builder.Build();
 host.Run();

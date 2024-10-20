@@ -1,6 +1,6 @@
 ﻿using GeneratorDuty.Models;
 
-namespace GeneratorDuty.Cache;
+namespace GeneratorDuty.Services;
 
 public class MemoryExceptionDuty
 {
