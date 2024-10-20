@@ -20,7 +20,7 @@ builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
         return new TelegramBotClient(options, httpClient);
     });
 
-builder.Services.AddScoped<MainPoll>();
+builder.Services.AddScoped<UpdateHandle>();
 builder.Services.AddScoped<ReceiverService>();
 builder.Services.AddHostedService<PollingService>();
 builder.Services.AddDbContext<DutyContext>();
@@ -49,6 +49,6 @@ CommandStingUtils.Me = me.Username ?? string.Empty;
 foreach (var task in tasks)
     _ = task.RunAsync();
 
-await botClient.ReceiveAsync(new MainPoll(new DutyContext(), samgkApi));
+await botClient.ReceiveAsync(new UpdateHandle(new DutyContext(), samgkApi));
 
 await Task.Delay(-1);

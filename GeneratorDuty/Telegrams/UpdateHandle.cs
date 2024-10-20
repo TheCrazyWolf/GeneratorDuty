@@ -10,7 +10,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Telegrams;
 
-public class MainPoll(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandler
+public class UpdateHandle(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandler
 {
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {

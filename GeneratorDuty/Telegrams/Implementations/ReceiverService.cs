@@ -4,5 +4,5 @@ using Telegram.Bot;
 
 namespace GeneratorDuty.Telegrams.Implementations;
 
-public class ReceiverService(ITelegramBotClient botClient, MainPoll updateHandler, ILogger<ReceiverServiceBase<MainPoll>> logger)
-    : ReceiverServiceBase<MainPoll>(botClient, updateHandler, logger);
+public class ReceiverService(ITelegramBotClient botClient, UpdateHandle updateHandler, ILogger<ReceiverServiceBase<UpdateHandle>> logger)
+    : ReceiverServiceBase<UpdateHandle>(botClient, updateHandler, logger);
