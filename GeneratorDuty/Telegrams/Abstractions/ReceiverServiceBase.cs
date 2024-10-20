@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using GeneratorDuty.Extensions;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 
@@ -28,7 +29,6 @@ public abstract class ReceiverServiceBase<TUpdateHandler> : IReceiverService
     /// <returns></returns>
     public async Task ReceiveAsync(CancellationToken stoppingToken)
     {
-        // ToDo: we can inject ReceiverOptions through IOptions container
         var receiverOptions = new ReceiverOptions()
         {
             AllowedUpdates = [],
@@ -36,6 +36,7 @@ public abstract class ReceiverServiceBase<TUpdateHandler> : IReceiverService
         };
 
         var me = await _botClient.GetMeAsync(stoppingToken);
+        StringExtensions.Me = me.Username ?? string.Empty;
         _logger.LogInformation("Start receiving updates for {BotName}", me.Username ?? "My Awesome Bot");
 
         // Start receiving updates

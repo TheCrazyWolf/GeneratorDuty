@@ -13,7 +13,6 @@ namespace GeneratorDuty.Telegrams;
 
 public class UpdateHandle(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateHandler
 {
-    private bool isFirstPool = false;
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {
         new SetCommand(ef, clientSamgk),
@@ -37,13 +36,6 @@ public class UpdateHandle(DutyContext ef, ClientSamgkApi clientSamgk) : IUpdateH
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
     {
-
-        if (isFirstPool)
-        {
-            var me = await botClient.GetMeAsync(cancellationToken: cancellationToken);
-            StringExtensions.Me = me.Username ?? string.Empty;
-            isFirstPool = true;
-        }
         
         switch (update.Type)
         {
