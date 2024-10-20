@@ -42,4 +42,17 @@ public static class TelegramExtensions
             Console.WriteLine();
         }
     }
+    
+    public static async Task<bool> IsUserAdminInChat(this ITelegramBotClient botClient, long userId, long chatId)
+    {
+        try
+        {
+            var chatMember = await botClient.GetChatAdministratorsAsync(chatId: chatId);
+            return chatMember.Any(x => x.User.Id == userId);
+        }
+        catch
+        {
+            return false;
+        }
+    }
 }

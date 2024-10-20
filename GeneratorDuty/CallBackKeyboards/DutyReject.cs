@@ -18,6 +18,12 @@ public class DutyReject(DutyRepository repository, MemoryExceptionDuty cache) : 
         if (callbackQuery.Message is null || array is null || array.Length == 0 ||
             !long.TryParse(array[0], out var idMemberDuty)) return;
 
+        if (!await client.IsUserAdminInChat(callbackQuery.From.Id, callbackQuery.Message.Chat.Id))
+        {
+            await client.AnswerCallbackQueryAsync(callbackQuery.Id, "❌ \n\nВы точно админ? Вас не узнали... Эта кнопка работает только в чатах и Вы должны быть админом", true);
+            return;
+        }
+        
         var memberDuty = await repository.Members.GetMemberDuty(idMemberDuty);
         if (memberDuty is null) return;
 
