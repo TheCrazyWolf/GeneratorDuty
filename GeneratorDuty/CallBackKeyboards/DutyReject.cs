@@ -4,8 +4,6 @@ using GeneratorDuty.Models;
 using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
-
 namespace GeneratorDuty.CallBackKeyboards;
 
 public class DutyReject(DutyContext ef) : CallQuery
@@ -26,7 +24,6 @@ public class DutyReject(DutyContext ef) : CallQuery
         await ef.AddAsync(new LogDutyMemberLost
         {
             UserId = memberDuty.Id,
-            Date = DateTime.Now,
         });
         await ef.SaveChangesAsync();
 
