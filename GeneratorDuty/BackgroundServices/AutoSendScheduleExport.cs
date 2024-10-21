@@ -1,11 +1,10 @@
 ﻿using System.Timers;
 using ClientSamgk;
 using GeneratorDuty.BuilderHtml;
-using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Timer =  System.Timers.Timer;
@@ -13,7 +12,7 @@ using Timer =  System.Timers.Timer;
 namespace GeneratorDuty.BackgroundServices;
 
 public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository repository, 
-    ClientSamgkApi clientSamgkApi) : BackgroundService
+    ClientSamgkApi clientSamgkApi, ILogger logger) : BackgroundService
 {
     private readonly Timer _timer = new Timer
     {
@@ -25,6 +24,8 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
         var dateTime = DateTime.Now;
         
         if(!CanWorkSerivce(DateTime.Now)) return;
+        
+        logger.LogInformation($"Запуск скрипта по расписанию");
 
         var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoExport(true);
         
@@ -33,6 +34,7 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
         foreach (var item in scheduleProps.Where(item => item.LastResult
                                                          != DateTime.Now.ToString("yyyy-MM-dd")))
         {
+            logger.LogInformation($"Скрипт № {item.Id} начал работать");
             var builderSchedule = new HtmlBuilderSchedule();
 
             var allExportResult = await clientSamgkApi.Schedule
@@ -49,6 +51,7 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
 
             item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
             await repository.ScheduleProps.Update(item);
+            logger.LogInformation($"Скрипт № {item.Id} отработан");
             await Task.Delay(1000);
         }
     }
@@ -57,7 +60,7 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
     {
         return nowTime.Hour switch
         {
-            >= 12 or <= 7 => false,
+            >= 19 or <= 7 => false,
             _ => true
         };
     }
@@ -66,6 +69,7 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
     {
         _timer.Elapsed += OnEventExecution;
         _timer.Start();
+        logger.LogInformation($"Запущен сервис");
         return Task.CompletedTask;
     }
 }
