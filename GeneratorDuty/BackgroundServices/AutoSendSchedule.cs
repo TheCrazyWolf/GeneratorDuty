@@ -11,7 +11,7 @@ using Timer =  System.Timers.Timer;
 namespace GeneratorDuty.BackgroundServices;
 
 public class AutoSendSchedule(ITelegramBotClient client, DutyRepository repository, 
-    ClientSamgkApi clientSamgkApi, ILogger logger) : BackgroundService
+    ClientSamgkApi clientSamgkApi, ILogger<AutoSendSchedule> logger) : BackgroundService
 {
     private readonly Timer _timer = new Timer
     {
