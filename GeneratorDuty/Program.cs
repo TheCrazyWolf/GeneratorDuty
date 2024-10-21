@@ -21,10 +21,10 @@ builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
 builder.Services.AddScoped<UpdateHandle>();
 builder.Services.AddScoped<ReceiverService>();
 builder.Services.AddHostedService<PollingService>();
-builder.Services.AddDbContext<DutyContext>();
+builder.Services.AddTransient<DutyContext>();
 builder.Services.AddSingleton<ClientSamgkApi>();
 builder.Services.AddSingleton<MemoryExceptionDuty>();
-builder.Services.AddScoped<DutyRepository>();
+builder.Services.AddTransient<DutyRepository>();
 builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
 
