@@ -20,7 +20,7 @@ public class DutyReject(DutyRepository repository, MemoryExceptionDuty cache) : 
 
         if (!await client.IsUserAdminInChat(callbackQuery.From.Id, callbackQuery.Message.Chat.Id))
         {
-            await client.AnswerCallbackQueryAsync(callbackQuery.Id, "❌ \n\nВы точно админ? Вас не узнали... Эта кнопка работает только в чатах и Вы должны быть админом", true);
+            await client.AnswerCallbackQueryAsync(callbackQuery.Id, "❌ \n\nВы точно админ чата? Я Вас не узнал...", true);
             return;
         }
         
