@@ -28,12 +28,13 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new SAutoCommand(ef),
         new StartCommand(),
         new SayCommand(ef),
-        new HistoryCommand(ef)
+        new HistoryCommand(ef),
+        new ForceCommand(ef)
     };
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
     {
-        new DutyAccept(ef), new DutyReject(ef, cache)
+        new DutyAccept(ef), new DutyReject(ef, cache), new DutyForce(ef), new DutyForceCancel(ef)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
