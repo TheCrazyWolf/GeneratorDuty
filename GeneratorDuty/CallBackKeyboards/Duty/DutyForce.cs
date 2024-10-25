@@ -6,11 +6,11 @@ using GeneratorDuty.Repository;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace GeneratorDuty.CallBackKeyboards;
+namespace GeneratorDuty.CallBackKeyboards.Duty;
 
-public class DutyAccept(DutyRepository repository) : CallQuery
+public class DutyForce(DutyRepository repository) : CallQuery
 {
-    public override string Name { get; set; } = "duty_accept";
+    public override string Name { get; set; } = "duty_force";
 
     public override async void Execute(ITelegramBotClient client, CallbackQuery callbackQuery)
     {
@@ -24,19 +24,19 @@ public class DutyAccept(DutyRepository repository) : CallQuery
             return;
         }
         
-        var memberDuty = await repository.Members.GetMemberDuty(idMemberDuty);
-        if (memberDuty is null) return;
+        var members = await repository.Members.GetMemberDuty(idMemberDuty);
+        if (members is null) return;
 
         await repository.LogsMembers.Create(new LogDutyMember
         {
-            UserId = memberDuty.Id,
+            UserId = members.Id,
             Date = DateTime.Now
         });
         
         foreach (var member in await repository.LogsMemberPriority.GetLogsByIdMember(idMemberDuty))
             await repository.LogsMemberPriority.Remove(member);
         
-        await client.EditMessageReplyMarkupAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId,
-            replyMarkup: null);
+        await client.TryDeleteMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
+        await client.TrySendMessage(callbackQuery.Message.Chat.Id,$"Назначен дежурный вручную: {members.MemberNameDuty}");
     }
 }

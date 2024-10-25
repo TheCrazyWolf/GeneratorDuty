@@ -1,5 +1,7 @@
 using ClientSamgk;
 using GeneratorDuty.CallBackKeyboards;
+using GeneratorDuty.CallBackKeyboards.Duty;
+using GeneratorDuty.CallBackKeyboards.Schedule;
 using GeneratorDuty.Commands;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;

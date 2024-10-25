@@ -2,13 +2,12 @@
 using ClientSamgk.Enums;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace GeneratorDuty.CallBackKeyboards;
+namespace GeneratorDuty.CallBackKeyboards.Schedule;
 
 public class ScheduleKeyboard(ClientSamgkApi clientSamgk) : CallQuery
 {
