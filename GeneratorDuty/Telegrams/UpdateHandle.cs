@@ -22,7 +22,6 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new GetCommand(ef,cache),
         new UpdateCommand(ef),
         new OpenCommand(ef, clientSamgk),
-        new TomorrowCommand(ef, clientSamgk),
         new AutoCommand(ef),
         new ExportCommand(clientSamgk),
         new SAutoCommand(ef),
