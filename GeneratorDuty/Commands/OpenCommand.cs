@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace GeneratorDuty.Commands;
 
-public class TodayCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
+public class OpenCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
 {
-    public override string Command { get; } = "/today";
+    public override string Command { get; } = "/open";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
@@ -32,6 +33,8 @@ public class TodayCommand(DutyRepository repository, ClientSamgkApi clientSamgk)
         var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
             prop.SearchType, prop.Value);
         
-        await client.TrySendMessage(message.Chat.Id, result.GetStringFromRasp());
+        
+        await client.TrySendMessage(message.Chat.Id, result.GetStringFromRasp(), replyMarkup:
+           new InlineKeyboardMarkup(result.GenerateKeyboardOnSchedule(prop.SearchType, prop.Value)));
     }
 }
