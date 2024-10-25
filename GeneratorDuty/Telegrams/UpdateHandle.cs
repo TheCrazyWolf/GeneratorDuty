@@ -6,6 +6,7 @@ using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Services;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -13,7 +14,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace GeneratorDuty.Telegrams;
 
-public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryExceptionDuty cache) : IUpdateHandler
+public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryExceptionDuty cache, ILogger<UpdateHandle> logger) : IUpdateHandler
 {
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {
@@ -27,37 +28,40 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new SAutoCommand(ef),
         new StartCommand(),
         new SayCommand(ef),
-        new HistoryCommand(ef)
+        new HistoryCommand(ef),
+        new ForceCommand(ef)
     };
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
     {
-        new DutyAccept(ef), new DutyReject(ef, cache)
+        new DutyAccept(ef), new DutyReject(ef, cache), new DutyForce(ef), new DutyForceCancel(ef)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
         CancellationToken cancellationToken)
     {
-        
         switch (update.Type)
         {
-            case UpdateType.Message when update.Message != null:
+            case UpdateType.Message when update.Message?.From != null:
             {
                 foreach (var command in _commands)
                 {
                     if(!command.Contains(update.Message))
                         continue;
-
+                    
+                    logger.LogInformation($"Обработка команды: {command.Command}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id}");
                     await command.ExecuteAsync(botClient, update.Message);
                 }
-
+                logger.LogInformation($"Сообщение: {update.Message.MessageId}. от: ID {update.Message.From.Id} в чате: {update.Message.Chat.Id} c текстом: {update.Message.Text}");
                 break;
             }
-            case UpdateType.CallbackQuery when update.CallbackQuery != null:
+            
+            case UpdateType.CallbackQuery when update.CallbackQuery?.Message != null:
             {
                 foreach (var item in _callQueries)
                 {
                     if(!item.Contains(update.CallbackQuery)) continue;
+                    logger.LogInformation($"Обработка CallBackQuery: {item.Name}. от: ID {update.CallbackQuery.From.Id} в чате: {update.CallbackQuery.Message.Chat.Id}");
                     item.Execute(botClient, update.CallbackQuery);
                 }
 

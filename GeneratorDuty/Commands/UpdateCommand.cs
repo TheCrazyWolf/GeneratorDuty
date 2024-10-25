@@ -1,4 +1,5 @@
 using GeneratorDuty.Common;
+using GeneratorDuty.CustomRights;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
@@ -17,6 +18,12 @@ public class UpdateCommand(DutyRepository repository) : BaseCommand
     {
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
+        
+        if (Restrictions.ChatIdsRequiredAdminRights.Contains(message.Chat.Id) && !await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
+        {
+            await client.TrySendMessage(message.Chat.Id, "В этом чате данное действие могут выполнять только админы беседы");
+            return;
+        }
 
         var membersArray = message.Text.Split('\n');
 

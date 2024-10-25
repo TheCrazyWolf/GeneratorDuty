@@ -4,14 +4,14 @@ using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Utils;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
-using Telegram.Bot.Types.Enums;
 using Timer =  System.Timers.Timer;
 
 namespace GeneratorDuty.BackgroundServices;
 
 public class AutoSendSchedule(ITelegramBotClient client, DutyRepository repository, 
-    ClientSamgkApi clientSamgkApi) : BackgroundService
+    ClientSamgkApi clientSamgkApi, ILogger<AutoSendSchedule> logger) : BackgroundService
 {
     private readonly Timer _timer = new Timer
     {
@@ -23,6 +23,8 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
         var dateTime = DateTime.Now;
         
         if(!CanWorkSerivce(DateTime.Now)) return;
+        
+        logger.LogInformation($"Запуск скрипта по расписанию");
         
         var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoSend(true);
         
@@ -38,6 +40,8 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
         
         foreach (var item in scheduleProps)
         {
+            logger.LogInformation($"Скрипт № {item.Id} начал работать");
+            
             var result = await clientSamgkApi.Schedule
                 .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
 
@@ -50,6 +54,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
             await client.TrySendMessage(item.IdPeer, newResult);
             item.LastResult = newResult;
             await repository.ScheduleProps.Update(item);
+            logger.LogInformation($"Скрипт № {item.Id} отработан");
             await Task.Delay(1000);
         }
     }
@@ -67,6 +72,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
     {
         _timer.Elapsed += OnEventExecution;
         _timer.Start();
+        logger.LogInformation($"Запущен сервис");
         return Task.CompletedTask;
     }
 }
