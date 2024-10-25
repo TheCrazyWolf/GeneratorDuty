@@ -1,15 +1,10 @@
-using ClientSamgk;
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
-using GeneratorDuty.Utils;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Service;
 
 public class SayCommand(DutyRepository repository) : BaseCommand
 {

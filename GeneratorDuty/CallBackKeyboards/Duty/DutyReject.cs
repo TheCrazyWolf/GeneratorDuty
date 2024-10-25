@@ -1,4 +1,5 @@
 ﻿using GeneratorDuty.Commands;
+using GeneratorDuty.Commands.Duty;
 using GeneratorDuty.Common;
 using GeneratorDuty.CustomRights;
 using GeneratorDuty.Extensions;

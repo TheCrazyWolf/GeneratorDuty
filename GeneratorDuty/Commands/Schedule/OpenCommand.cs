@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Schedule;
 
 public class OpenCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
 {

@@ -5,9 +5,8 @@ using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Schedule;
 
 public class ExportCommand(ClientSamgkApi clientSamgk) : BaseCommand
 {
