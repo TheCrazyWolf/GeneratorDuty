@@ -49,7 +49,7 @@ public static class ScheduleUtils
                 InlineKeyboardButton.WithCallbackData("👈",
                     $"schedule {type} {value} {scheduleFromDate.Date.AddDays(-1):dd.MM.yyyy}"),
                 InlineKeyboardButton.WithCallbackData("❌",
-                    $"schedule_close"),
+                    $"schedule clear"),
                 InlineKeyboardButton.WithCallbackData("👉",
                     $"schedule {type} {value} {scheduleFromDate.Date.AddDays(+1):dd.MM.yyyy}"),
             },

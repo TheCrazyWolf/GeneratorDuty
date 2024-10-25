@@ -19,6 +19,21 @@ public static class TelegramExtensions
         }
     }
     
+    public static async Task TryEditMessage(this ITelegramBotClient client,
+        long chatId, int messageIdm, string message, IReplyMarkup? replyMarkup = null)
+    {
+        try
+        {
+            await client.EditMessageTextAsync(chatId: chatId, messageId: messageIdm, message,
+                replyMarkup: replyMarkup as InlineKeyboardMarkup,
+                parseMode: ParseMode.Html);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine();
+        }
+    }
+    
     public static async Task TryDeleteMessage(this ITelegramBotClient client, long chatId, int messageId)
     {
         try
