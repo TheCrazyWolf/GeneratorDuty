@@ -26,6 +26,9 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk) : CallQuery
             return;
         }
         
+        if(date.DayOfWeek is DayOfWeek.Sunday)
+            date = date.AddDays(+1);
+        
         var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(date), 
             searchType, array[1]);
         
