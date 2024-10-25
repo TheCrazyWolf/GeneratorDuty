@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="ClientSamgk" Version="2.6.0" />
+      <PackageReference Include="ClientSamgk" Version="2.6.2" />
     </ItemGroup>
 
 </Project>
