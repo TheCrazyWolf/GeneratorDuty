@@ -17,6 +17,7 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk) : CallQuery
     {
         var array = TryGetArrayFromCallBack(callbackQuery);
         
+        // example: schedule <type> <value> <date>
         if (callbackQuery.Message is null || array is null || array.Length == 0 ||
             !Enum.TryParse<ScheduleSearchType>(array[0], out var searchType) || !DateTime.TryParse(array[2], out var date))
         {
