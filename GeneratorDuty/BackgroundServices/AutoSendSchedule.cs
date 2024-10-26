@@ -47,7 +47,7 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
 
             if (result.Lessons.Count is 0) continue;
                 
-            var newResult = result.GetStringFromRasp();
+            var newResult = result.GetMd5();
 
             if (item.LastResult == newResult) continue;
                 
