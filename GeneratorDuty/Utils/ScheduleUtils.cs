@@ -13,9 +13,32 @@ public static class ScheduleUtils
         var msg = new StringBuilder();
 
         msg.AppendLine(
-            $"Расписание на {scheduleFromDate.Date.ToString("dd.MM")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek)}");
+            $"Расписание на {scheduleFromDate.Date.ToString("dd.MM.yyyy")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek).ToUpperFirstLetter()}");
 
-        foreach (var lesson in scheduleFromDate.Lessons)
+        msg.AppendLine(scheduleFromDate.Lessons.Count is 0
+            ? "<blockquote> Расписание еще не внесено</blockquote>"
+            : scheduleFromDate.Lessons.GetStringFromLesson());
+        
+        return msg.ToString();
+    }
+    
+    public static string ToUpperFirstLetter(this string source)
+    {
+        if (string.IsNullOrEmpty(source))
+            return string.Empty;
+        // convert to char array of the string
+        char[] letters = source.ToCharArray();
+        // upper case the first char
+        letters[0] = char.ToUpper(letters[0]);
+        // return the array made of the new char array
+        return new string(letters);
+    }
+
+    public static string GetStringFromLesson(this IList<IResultOutLesson> lessons)
+    {
+        var msg = new StringBuilder();
+        
+        foreach (var lesson in lessons)
         {
             string teachers = lesson.Identity.Aggregate(string.Empty,
                 (current, teacher) =>
@@ -30,15 +53,22 @@ public static class ScheduleUtils
             msg.AppendLine($"Каб: {cabs} • {lesson.EducationGroup.Name}</blockquote>");
         }
 
-        if (scheduleFromDate.Lessons.Count is 0)
-        {
-            msg.AppendLine($"<blockquote> Расписание еще не внесено</blockquote>");
-        }
-
         return msg.ToString();
     }
 
-    public static IList<IList<InlineKeyboardButton>> GenerateKeyboardOnSchedule(this IResultOutScheduleFromDate scheduleFromDate,
+    public static string GetMd5(this IResultOutScheduleFromDate scheduleFromDate)
+    {
+        // Use input string to calculate MD5 hash
+        using System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+        
+        byte[] inputBytes = Encoding.ASCII.GetBytes(scheduleFromDate.Lessons.GetStringFromLesson());
+        byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+        return Convert.ToHexString(hashBytes);
+    }
+
+    public static IList<IList<InlineKeyboardButton>> GenerateKeyboardOnSchedule(
+        this IResultOutScheduleFromDate scheduleFromDate,
         ScheduleSearchType type, string value)
     {
         // example: schedule <type> <value> <date>
