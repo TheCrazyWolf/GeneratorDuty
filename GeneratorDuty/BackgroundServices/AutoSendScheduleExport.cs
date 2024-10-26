@@ -45,9 +45,12 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
             foreach (var scheduleFromDate in allExportResult)
                 builderSchedule.AddRow(scheduleFromDate, item.SearchType);
 
-            await client.TrySendDocument(item.IdPeer,
+            var success = await client.TrySendDocument(item.IdPeer,
                 new InputFileStream(builderSchedule.GetStreamFile(),
                     $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
+            
+            if (!success)
+                item.Fails++;
 
             item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
             await repository.ScheduleProps.Update(item);

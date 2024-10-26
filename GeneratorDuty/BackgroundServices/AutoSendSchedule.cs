@@ -51,10 +51,18 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
 
             if (item.LastResult == newResult) continue;
                 
-            await client.TrySendMessage(item.IdPeer, newResult);
+            var success = await client.TrySendMessage(item.IdPeer, newResult);
+
+            if (!success) item.Fails++;
+            
             item.LastResult = newResult;
             await repository.ScheduleProps.Update(item);
             logger.LogInformation($"Скрипт № {item.Id} отработан");
+
+            if (item.Fails >= 10)
+            {
+                await repository.ScheduleProps.Remove(item);
+            }
             await Task.Delay(1000);
         }
     }
