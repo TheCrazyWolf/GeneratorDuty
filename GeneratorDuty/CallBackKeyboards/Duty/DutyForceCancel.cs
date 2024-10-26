@@ -6,7 +6,7 @@ using Telegram.Bot.Types;
 
 namespace GeneratorDuty.CallBackKeyboards.Duty;
 
-public class DutyForceCancel(DutyRepository repository) : CallQuery
+public class DutyForceCancel : CallQuery
 {
     public override string Name { get; set; } = "duty_force_cancel";
 

@@ -7,19 +7,20 @@ namespace GeneratorDuty.Extensions;
 
 public static class TelegramExtensions
 {
-    public static async Task TrySendMessage(this ITelegramBotClient client, long chatId, string message, IReplyMarkup? replyMarkup = null)
+    public static async Task<bool> TrySendMessage(this ITelegramBotClient client, long chatId, string message, IReplyMarkup? replyMarkup = null)
     {
         try
         {
             await client.SendTextMessageAsync(chatId, message, replyMarkup: replyMarkup, parseMode: ParseMode.Html);
+            return true;
         }
-        catch (Exception e)
+        catch 
         {
-            Console.WriteLine();
+            return false;
         }
     }
     
-    public static async Task TryEditMessage(this ITelegramBotClient client,
+    public static async Task<bool> TryEditMessage(this ITelegramBotClient client,
         long chatId, int messageIdm, string message, IReplyMarkup? replyMarkup = null)
     {
         try
@@ -27,34 +28,37 @@ public static class TelegramExtensions
             await client.EditMessageTextAsync(chatId: chatId, messageId: messageIdm, message,
                 replyMarkup: replyMarkup as InlineKeyboardMarkup,
                 parseMode: ParseMode.Html);
+            return true;
         }
-        catch (Exception e)
+        catch 
         {
-            Console.WriteLine();
+            return false;
         }
     }
     
-    public static async Task TryDeleteMessage(this ITelegramBotClient client, long chatId, int messageId)
+    public static async Task<bool> TryDeleteMessage(this ITelegramBotClient client, long chatId, int messageId)
     {
         try
         {
             await client.DeleteMessageAsync(chatId, messageId);
+            return true;
         }
-        catch (Exception e)
+        catch
         {
-            Console.WriteLine();
+            return false;
         }
     }
     
-    public static async Task TrySendDocument(this ITelegramBotClient client, long chatId, InputFile file)
+    public static async Task<bool> TrySendDocument(this ITelegramBotClient client, long chatId, InputFile file)
     {
         try
         {
             await client.SendDocumentAsync(chatId, file);
+            return true;
         }
-        catch (Exception e)
+        catch 
         {
-            Console.WriteLine();
+            return false;
         }
     }
     
