@@ -46,11 +46,11 @@ public static class ScheduleUtils
             string cabs = lesson.Cabs.Aggregate(string.Empty,
                 (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"{cab.Auditory}," : $"{cab.Auditory}"));
             msg.AppendLine(
-                $"<blockquote>{lesson.NumPair}.{lesson.NumLesson} | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
+                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
             var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
-            msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.SubjectName}");
+            msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.FullSubjectName}");
             msg.AppendLine($"{teachers}");
-            msg.AppendLine($"Каб: {cabs} • {lesson.EducationGroup.Name}</blockquote>");
+            msg.AppendLine($"Каб: <b>{cabs}</b> • {lesson.EducationGroup.Name}</blockquote>");
         }
 
         return msg.ToString();
