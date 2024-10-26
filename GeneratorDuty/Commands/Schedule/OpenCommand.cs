@@ -1,26 +1,24 @@
 using ClientSamgk;
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Utils;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Schedule;
 
-public class TomorrowCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
+public class OpenCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
 {
-    public override string Command { get; } = "/tomorrow";
+    public override string Command { get; } = "/open";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
-
+        
         var prop = await repository.ScheduleProps.GetSchedulePropFromChat(message.Chat.Id);
         
         if(prop is null)
@@ -29,16 +27,10 @@ public class TomorrowCommand(DutyRepository repository, ClientSamgkApi clientSam
             return;
         }
         
-        var currentDateTime = DateTime.Now.AddDays(1);
-        
-        while (currentDateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-        {
-            currentDateTime = currentDateTime.AddDays(1);
-        }
-        
-        var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(currentDateTime), 
+        var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
             prop.SearchType, prop.Value);
         
-        await client.TrySendMessage(message.Chat.Id, result.GetStringFromRasp());
+        await client.TrySendMessage(message.Chat.Id, result.GetStringFromRasp(), replyMarkup:
+           new InlineKeyboardMarkup(result.GenerateKeyboardOnSchedule(prop.SearchType, prop.Value)));
     }
 }

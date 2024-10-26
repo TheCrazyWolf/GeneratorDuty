@@ -1,6 +1,11 @@
 using ClientSamgk;
 using GeneratorDuty.CallBackKeyboards;
+using GeneratorDuty.CallBackKeyboards.Duty;
+using GeneratorDuty.CallBackKeyboards.Schedule;
 using GeneratorDuty.Commands;
+using GeneratorDuty.Commands.Duty;
+using GeneratorDuty.Commands.Schedule;
+using GeneratorDuty.Commands.Service;
 using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
@@ -21,8 +26,7 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new SetCommand(ef, clientSamgk),
         new GetCommand(ef,cache),
         new UpdateCommand(ef),
-        new TodayCommand(ef, clientSamgk),
-        new TomorrowCommand(ef, clientSamgk),
+        new OpenCommand(ef, clientSamgk),
         new AutoCommand(ef),
         new ExportCommand(clientSamgk),
         new SAutoCommand(ef),
@@ -34,7 +38,8 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
     {
-        new DutyAccept(ef), new DutyReject(ef, cache), new DutyForce(ef), new DutyForceCancel(ef)
+        new DutyAccept(ef), new DutyReject(ef, cache), new DutyForce(ef), new DutyForceCancel(),
+        new ScheduleKeyboard(clientSamgk)
     };
     
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,

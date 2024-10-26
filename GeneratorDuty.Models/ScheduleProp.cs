@@ -11,4 +11,5 @@ public class ScheduleProp : CommonEntity
     public bool IsAutoSend { get; set; } = false;
     public bool IsAutoExport { get; set; } = false;
     public string LastResult { get; set; } = string.Empty;
+    public int Fails { get; set; }
 }

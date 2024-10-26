@@ -1,13 +1,9 @@
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Models;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Service;
 
 public class StartCommand() : BaseCommand
 {
@@ -21,7 +17,7 @@ public class StartCommand() : BaseCommand
                               "<b>Установка группы и автоматической рассылки:</b> \n\n" +
                               "1. /set ИС-23-01 или /set ФИО педагога\n" +
                               "2. /auto true - включить авто рассылку, /auto false - выключить\n\n" +
-                              "Установка списка дежурных: \n" +
+                              "<b>Установка списка дежурных:</b> \n" +
                               "1. /update Фамилия И.О. (перенос строки для след. объект обязателен)\n" +
                               "Фамилия И.О. и т.д. \n" +
                               "2. Выбрать дежурного /get\n\n" +

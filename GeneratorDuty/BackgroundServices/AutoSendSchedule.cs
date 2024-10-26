@@ -46,15 +46,19 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
                 .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
 
             if (result.Lessons.Count is 0) continue;
+            
+            if (item.LastResult == result.GetMd5()) continue;
                 
-            var newResult = result.GetStringFromRasp();
+            var success = await client.TrySendMessage(item.IdPeer, result.GetStringFromRasp());
 
-            if (item.LastResult == newResult) continue;
-                
-            await client.TrySendMessage(item.IdPeer, newResult);
-            item.LastResult = newResult;
+            if (!success) item.Fails++;
+            
+            item.LastResult = result.GetMd5();
             await repository.ScheduleProps.Update(item);
             logger.LogInformation($"Скрипт № {item.Id} отработан");
+
+            if (item.Fails >= 10) await repository.ScheduleProps.Remove(item);
+            
             await Task.Delay(1000);
         }
     }

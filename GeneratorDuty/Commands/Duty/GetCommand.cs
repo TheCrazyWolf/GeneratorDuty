@@ -1,15 +1,13 @@
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Services;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Duty;
 
 public class GetCommand(DutyRepository repository, MemoryExceptionDuty cache) : BaseCommand
 {

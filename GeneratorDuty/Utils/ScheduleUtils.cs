@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using System.Text;
+using ClientSamgk.Enums;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace GeneratorDuty.Utils;
 
@@ -10,24 +12,79 @@ public static class ScheduleUtils
     {
         var msg = new StringBuilder();
 
-        msg.AppendLine($"Расписание на {scheduleFromDate.Date.ToString("dd.MM")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek)}");
-        
-        foreach (var lesson in scheduleFromDate.Lessons)
-        {
-            string teachers = lesson.Identity.Aggregate(string.Empty, (current, teacher) => current + (lesson.Identity.Count >= 2 ? $"{teacher.ShortName}," : $"{teacher.ShortName}"));
-            string cabs = lesson.Cabs.Aggregate(string.Empty, (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"{cab.Auditory}," : $"{cab.Auditory}"));
-            msg.AppendLine($"<blockquote>{lesson.NumPair}.{lesson.NumLesson} | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
-            var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
-            msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.SubjectName}");
-            msg.AppendLine($"{teachers}");
-            msg.AppendLine($"Каб: {cabs} • {lesson.EducationGroup.Name}</blockquote>");
-        }
+        msg.AppendLine(
+            $"Расписание на {scheduleFromDate.Date.ToString("dd.MM.yyyy")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek).ToUpperFirstLetter()}");
 
-        if (scheduleFromDate.Lessons.Count is 0)
+        msg.AppendLine(scheduleFromDate.Lessons.Count is 0
+            ? "<blockquote> Расписание еще не внесено</blockquote>"
+            : scheduleFromDate.Lessons.GetStringFromLesson());
+        
+        return msg.ToString();
+    }
+    
+    public static string ToUpperFirstLetter(this string source)
+    {
+        if (string.IsNullOrEmpty(source))
+            return string.Empty;
+        // convert to char array of the string
+        char[] letters = source.ToCharArray();
+        // upper case the first char
+        letters[0] = char.ToUpper(letters[0]);
+        // return the array made of the new char array
+        return new string(letters);
+    }
+
+    public static string GetStringFromLesson(this IList<IResultOutLesson> lessons)
+    {
+        var msg = new StringBuilder();
+        
+        foreach (var lesson in lessons)
         {
-            msg.AppendLine($"\n<blockquote> Расписание еще не внесено</blockquote>");
+            string teachers = lesson.Identity.Aggregate(string.Empty,
+                (current, teacher) =>
+                    current + (lesson.Identity.Count >= 2 ? $"{teacher.ShortName}," : $"{teacher.ShortName}"));
+            string cabs = lesson.Cabs.Aggregate(string.Empty,
+                (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"{cab.Auditory}," : $"{cab.Auditory}"));
+            msg.AppendLine(
+                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
+            var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
+            msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.FullSubjectName}");
+            msg.AppendLine($"{teachers}");
+            msg.AppendLine($"Каб: <b>{cabs}</b> • {lesson.EducationGroup.Name}</blockquote>");
         }
 
         return msg.ToString();
+    }
+
+    public static string GetMd5(this IResultOutScheduleFromDate scheduleFromDate)
+    {
+        // Use input string to calculate MD5 hash
+        using System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+        
+        byte[] inputBytes = Encoding.ASCII.GetBytes(scheduleFromDate.Lessons.GetStringFromLesson());
+        byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+        return Convert.ToHexString(hashBytes);
+    }
+
+    public static IList<IList<InlineKeyboardButton>> GenerateKeyboardOnSchedule(
+        this IResultOutScheduleFromDate scheduleFromDate,
+        ScheduleSearchType type, string value)
+    {
+        // example: schedule <type> <value> <date>
+        return new List<IList<InlineKeyboardButton>>
+        {
+            new List<InlineKeyboardButton>
+            {
+                InlineKeyboardButton.WithCallbackData("👈",
+                    $"schedule {type} {value} {scheduleFromDate.Date.AddDays(-1):dd.MM.yyyy}"),
+                InlineKeyboardButton.WithCallbackData("❌",
+                    $"schedule clear"),
+                InlineKeyboardButton.WithCallbackData("♻️",
+                    $"schedule {type} {value} {scheduleFromDate.Date:dd.MM.yyyy}"),
+                InlineKeyboardButton.WithCallbackData("👉",
+                    $"schedule {type} {value} {scheduleFromDate.Date.AddDays(+1):dd.MM.yyyy}"),
+            },
+        };
     }
 }

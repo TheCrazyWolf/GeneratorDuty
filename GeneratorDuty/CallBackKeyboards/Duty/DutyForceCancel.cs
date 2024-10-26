@@ -1,14 +1,12 @@
 ﻿using GeneratorDuty.Common;
-using GeneratorDuty.CustomRights;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace GeneratorDuty.CallBackKeyboards;
+namespace GeneratorDuty.CallBackKeyboards.Duty;
 
-public class DutyForceCancel(DutyRepository repository) : CallQuery
+public class DutyForceCancel : CallQuery
 {
     public override string Name { get; set; } = "duty_force_cancel";
 

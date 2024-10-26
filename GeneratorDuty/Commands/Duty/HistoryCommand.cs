@@ -1,15 +1,10 @@
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
-using GeneratorDuty.Services;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Duty;
 
 public class HistoryCommand(DutyRepository repository) : BaseCommand
 {
@@ -21,13 +16,13 @@ public class HistoryCommand(DutyRepository repository) : BaseCommand
         
         var mainList = await repository.Members.GetMembersFromChat(message.Chat.Id);
 
-        string messageToBeSend = "Студент | Дата дежурства\n";
+        string messageToBeSend = "Студент | Дата последнего дежурства\n";
         
         foreach (var item in mainList)
         {
             var inHistory = await repository.LogsMembers.GetLastLog(item);
             string date = inHistory is null ? "Н/Д" : inHistory.Date.ToString("dd.MM.yyyy");
-            messageToBeSend += $"{item.MemberNameDuty} | {date}\n";
+            messageToBeSend += $"<blockquote><b>{item.MemberNameDuty}</b> - {date}</blockquote>";
         }
         
         await client.TrySendMessage(message.Chat.Id, messageToBeSend);

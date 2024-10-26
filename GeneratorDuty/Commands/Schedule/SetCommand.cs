@@ -10,7 +10,7 @@ using GeneratorDuty.Repository;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Schedule;
 
 public class SetCommand(DutyRepository repository, ClientSamgkApi clientSamgk) : BaseCommand
 {

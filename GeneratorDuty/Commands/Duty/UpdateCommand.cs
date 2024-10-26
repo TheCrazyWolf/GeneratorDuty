@@ -1,14 +1,12 @@
 using GeneratorDuty.Common;
 using GeneratorDuty.CustomRights;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace GeneratorDuty.Commands;
+namespace GeneratorDuty.Commands.Duty;
 
 public class UpdateCommand(DutyRepository repository) : BaseCommand
 {
