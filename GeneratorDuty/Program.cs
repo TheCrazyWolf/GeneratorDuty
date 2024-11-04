@@ -5,6 +5,7 @@ using GeneratorDuty.Repository;
 using GeneratorDuty.Services;
 using GeneratorDuty.Telegrams;
 using GeneratorDuty.Telegrams.Implementations;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
@@ -14,7 +15,9 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
     .AddTypedClient<ITelegramBotClient>((httpClient, sp) =>
     {
-        TelegramBotClientOptions options = new(args.First());
+        var accessTokenTelegram = sp.GetRequiredService<IConfiguration>().GetValue<string>("TelegramBotAccessToken");
+        ArgumentNullException.ThrowIfNull(accessTokenTelegram, nameof(accessTokenTelegram));
+        TelegramBotClientOptions options = new(accessTokenTelegram);
         return new TelegramBotClient(options, httpClient);
     });
 
