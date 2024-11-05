@@ -1,4 +1,5 @@
-﻿using ClientSamgk;
+﻿using System.Globalization;
+using ClientSamgk;
 using GeneratorDuty.BackgroundServices;
 using GeneratorDuty.Database;
 using GeneratorDuty.Repository;
@@ -30,6 +31,6 @@ builder.Services.AddSingleton<MemoryExceptionDuty>();
 builder.Services.AddTransient<DutyRepository>();
 builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
-
+CultureInfo.CurrentCulture = new CultureInfo("ru-RU");
 var host = builder.Build();
 host.Run();
