@@ -49,6 +49,13 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         {
             case UpdateType.Message when update.Message?.From != null:
             {
+                if (update.Message.ReplyToMessage?.From?.Id is 6767513506 ||
+                    update.Message.From.Id is 6767513506)
+                {
+                    await botClient.TryDeleteMessage(chatId: update.Message.Chat.Id, update.Message.MessageId);
+                    return;
+                }
+                
                 foreach (var command in _commands)
                 {
                     if(!command.Contains(update.Message))
