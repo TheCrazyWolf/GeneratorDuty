@@ -22,7 +22,7 @@ public class HistoryCommand(DutyRepository repository) : BaseCommand
         {
             var inHistory = await repository.LogsMembers.GetLastLog(item);
             string date = inHistory is null ? "Н/Д" : inHistory.Date.ToString("dd.MM.yyyy");
-            messageToBeSend += $"<blockquote><b>{item.MemberNameDuty}</b> - {date}</blockquote>";
+            messageToBeSend += $"<b>{item.MemberNameDuty}</b> - {date}";
         }
         
         await client.TrySendMessage(message.Chat.Id, messageToBeSend);
