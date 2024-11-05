@@ -11,7 +11,7 @@ public static class ScheduleUtils
     public static string GetStringFromRasp(this IResultOutScheduleFromDate scheduleFromDate)
     {
         var msg = new StringBuilder();
-
+        CultureInfo.CurrentCulture = new CultureInfo("ru-RU");
         msg.AppendLine(
             $"Расписание на {scheduleFromDate.Date.ToString("dd.MM.yyyy")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek).ToUpperFirstLetter()}");
 
