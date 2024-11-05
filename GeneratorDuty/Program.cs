@@ -12,6 +12,9 @@ using Microsoft.Extensions.Hosting;
 using Telegram.Bot;
 
 var builder = Host.CreateApplicationBuilder(args);
+CultureInfo.CurrentCulture = new CultureInfo("ru-RU");
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.CreateSpecificCulture("ru-RU");
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.CreateSpecificCulture("ru-RU");
 
 builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
     .AddTypedClient<ITelegramBotClient>((httpClient, sp) =>
@@ -31,6 +34,5 @@ builder.Services.AddSingleton<MemoryExceptionDuty>();
 builder.Services.AddTransient<DutyRepository>();
 builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
-CultureInfo.CurrentCulture = new CultureInfo("ru-RU");
 var host = builder.Build();
 host.Run();
