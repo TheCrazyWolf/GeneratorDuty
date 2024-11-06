@@ -45,7 +45,7 @@ public class SAutoCommand(DutyRepository repository) : BaseCommand
     
     private ScheduleSearchType ConvertToType(string type)
     {
-        if (Enum.TryParse(type, out ScheduleSearchType searchType))
+        if (Enum.TryParse(type,true, out ScheduleSearchType searchType))
             return searchType;
         
         throw new Exception("Fail to convert " + type + " to ScheduleSearchType");
