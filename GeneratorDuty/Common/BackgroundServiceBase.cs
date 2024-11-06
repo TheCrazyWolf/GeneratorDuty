@@ -7,7 +7,7 @@ public class BackgroundServiceBase : BackgroundService
 {
     protected readonly Timer Timer = new Timer
     {
-        #if debug
+        #if DEBUG
         Interval = 10000,
         #else
         Interval = 300000, // 300000
@@ -21,7 +21,7 @@ public class BackgroundServiceBase : BackgroundService
     
     protected bool CanWorkSerivce(DateTime nowTime)
     {
-        #if debug
+        #if DEBUG
         return true;
         #else
         return nowTime.Hour switch
