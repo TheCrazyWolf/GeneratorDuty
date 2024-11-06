@@ -12,7 +12,7 @@ public class BackgroundServiceBase : BackgroundService
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
     
     protected bool CanWorkSerivce(DateTime nowTime)
