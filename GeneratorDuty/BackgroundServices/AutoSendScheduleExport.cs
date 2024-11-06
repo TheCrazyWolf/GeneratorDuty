@@ -68,7 +68,7 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
                 await repository.ScheduleProps.Remove(item);
             }
             logger.LogInformation($"Скрипт № {item.Id} Завершен");
-            await Task.Delay(1000);
+            await Task.Delay(15000);
         }
     }
 
