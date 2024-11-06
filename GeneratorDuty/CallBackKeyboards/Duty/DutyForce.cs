@@ -5,6 +5,7 @@ using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace GeneratorDuty.CallBackKeyboards.Duty;
 
@@ -36,7 +37,6 @@ public class DutyForce(DutyRepository repository) : CallQuery
         foreach (var member in await repository.LogsMemberPriority.GetLogsByIdMember(idMemberDuty))
             await repository.LogsMemberPriority.Remove(member);
         
-        await client.TryDeleteMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
-        await client.TrySendMessage(callbackQuery.Message.Chat.Id,$"Назначен дежурный вручную: {members.MemberNameDuty}");
+        await client.TryEditMessage(callbackQuery.Message.Chat.Id,callbackQuery.Message.MessageId, $"Назначен дежурный вручную: {members.MemberNameDuty}", replyMarkup: new ReplyKeyboardRemove());
     }
 }
