@@ -31,8 +31,7 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
         
         if(dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) return;
 
-        foreach (var item in scheduleProps.Where(item => item.LastResult
-                                                         != DateTime.Now.ToString("yyyy-MM-dd")))
+        foreach (var item in scheduleProps.Where(item => item.LastResult != DateTime.Now.ToString("yyyy-MM-dd")))
         {
             logger.LogInformation($"Скрипт № {item.Id} начал работать");
             var builderSchedule = new HtmlBuilderSchedule();
@@ -49,12 +48,16 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
                 new InputFileStream(builderSchedule.GetStreamFile(),
                     $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
             
-            if (!success)
-                item.Fails++;
-
-            item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
+            if (!success) item.Fails++;
+            
+            if (success)
+            {
+                item.Fails = 0;
+                item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
+                logger.LogInformation($"Скрипт № {item.Id} отработан");
+            }
+            
             await repository.ScheduleProps.Update(item);
-            logger.LogInformation($"Скрипт № {item.Id} отработан");
             await Task.Delay(1000);
         }
     }

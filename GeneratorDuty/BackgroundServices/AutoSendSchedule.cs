@@ -29,14 +29,10 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
         var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoSend(true);
         
         // если время вечернее смотрим расписание на перед
-        if (dateTime.Hour >= 10)
-            dateTime = dateTime.AddDays(1);
+        if (dateTime.Hour >= 10) dateTime = dateTime.AddDays(1);
             
         // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
-        while (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-        {
-            dateTime = dateTime.AddDays(1);
-        }
+        while (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) dateTime = dateTime.AddDays(1);
         
         foreach (var item in scheduleProps)
         {
@@ -46,17 +42,23 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
                 .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
 
             if (result.Lessons.Count is 0) continue;
+
+            var md5New = result.GetMd5();
             
-            if (item.LastResult == result.GetMd5()) continue;
+            if (item.LastResult == md5New) continue;
                 
             var success = await client.TrySendMessage(item.IdPeer, result.GetStringFromRasp());
 
             if (!success) item.Fails++;
             
-            item.LastResult = result.GetMd5();
+            if (success)
+            {
+                item.Fails = 0;
+                item.LastResult = md5New;
+                logger.LogInformation($"Скрипт № {item.Id} отработан");
+            }
+            
             await repository.ScheduleProps.Update(item);
-            logger.LogInformation($"Скрипт № {item.Id} отработан");
-
             if (item.Fails >= 10) await repository.ScheduleProps.Remove(item);
             
             await Task.Delay(1000);
