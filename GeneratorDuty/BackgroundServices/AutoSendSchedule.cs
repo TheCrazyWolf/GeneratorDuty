@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using System.Globalization;
+using System.Timers;
 using ClientSamgk;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
@@ -35,26 +36,42 @@ public class AutoSendSchedule(ITelegramBotClient client, DutyRepository reposito
             var result = await clientSamgkApi.Schedule
                 .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value);
 
-            if (result.Lessons.Count is 0) continue;
+            if (result.Lessons.Count is 0)
+            {
+                logger.LogInformation($"Скрипт № {item.Id} отработан: Расписание на {dateTime.ToString(CultureInfo.InvariantCulture)} - 0 пар");
+                continue;
+            }
 
             var md5New = result.GetMd5();
             
-            if (item.LastResult == md5New) continue;
+            if (item.LastResult == md5New)
+            {
+                logger.LogInformation($"Скрипт № {item.Id} отработан: Прошлый результат: {item.LastResult}. Новый {md5New}");
+                continue;
+            }
                 
             var success = await client.TrySendMessage(item.IdPeer, result.GetStringFromRasp());
 
-            if (!success) item.Fails++;
+            if (!success)
+            {
+                item.Fails++;
+                logger.LogInformation($"Скрипт № {item.Id} не отработан: Ошибки при отправке сообщения");
+            }
             
             if (success)
             {
                 item.Fails = 0;
                 item.LastResult = md5New;
-                logger.LogInformation($"Скрипт № {item.Id} отработан");
+                logger.LogInformation($"Скрипт № {item.Id} отработан: ОК");
             }
             
             await repository.ScheduleProps.Update(item);
-            if (item.Fails >= 10) await repository.ScheduleProps.Remove(item);
-            
+            if (item.Fails >= 10)
+            {
+                logger.LogInformation($"Скрипт № {item.Id} удалена из за большого кол-во ошибок");
+                await repository.ScheduleProps.Remove(item);
+            }
+            logger.LogInformation($"Скрипт № {item.Id} Завершен");
             await Task.Delay(1000);
         }
     }

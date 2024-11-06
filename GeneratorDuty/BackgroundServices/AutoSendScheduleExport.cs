@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using System.Globalization;
+using System.Timers;
 using ClientSamgk;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
@@ -34,7 +35,11 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
             var allExportResult = await clientSamgkApi.Schedule
                 .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
 
-            if (allExportResult.Count is 0) continue;
+            if (allExportResult.Count is 0)
+            {
+                logger.LogInformation($"Скрипт № {item.Id} отработан: Расписание на {dateTime.ToString(CultureInfo.InvariantCulture)} - 0 пар");
+                continue;
+            }
 
             foreach (var scheduleFromDate in allExportResult)
                 builderSchedule.AddRow(scheduleFromDate, item.SearchType);
@@ -43,17 +48,26 @@ public class AutoSendScheduleExport(ITelegramBotClient client, DutyRepository re
                 new InputFileStream(builderSchedule.GetStreamFile(),
                     $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
             
-            if (!success) item.Fails++;
+            if (!success)
+            {
+                item.Fails++;
+                logger.LogInformation($"Скрипт № {item.Id} не отработан: Ошибки при отправке сообщения");
+            }
             
             if (success)
             {
                 item.Fails = 0;
                 item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
-                logger.LogInformation($"Скрипт № {item.Id} отработан");
+                logger.LogInformation($"Скрипт № {item.Id} отработан: ОК");
             }
             
             await repository.ScheduleProps.Update(item);
-            if (item.Fails >= 10) await repository.ScheduleProps.Remove(item);
+            if (item.Fails >= 10)
+            {
+                logger.LogInformation($"Скрипт № {item.Id} удалена из за большого кол-во ошибок");
+                await repository.ScheduleProps.Remove(item);
+            }
+            logger.LogInformation($"Скрипт № {item.Id} Завершен");
             await Task.Delay(1000);
         }
     }
