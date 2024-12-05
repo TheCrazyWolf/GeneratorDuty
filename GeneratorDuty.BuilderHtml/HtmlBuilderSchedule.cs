@@ -31,13 +31,16 @@ public class HtmlBuilderSchedule : Common.BuilderHtml
             var cabs = string.Empty;
             teachers = item.Identity.Aggregate(teachers, (current, teacher) => current + $"<br>{teacher.Name}");
             cabs = item.Cabs.Aggregate(cabs, (current, cab) => current + $"<br>{cab.Adress}");
+            string durations = item.Durations.Aggregate(string.Empty,
+                (current, duration) => current + (item.Cabs.Count >= 1 ? $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}," : $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}"));
+            
             var isAttestation = item.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
-            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{item.DurationStart} -<br>{item.DurationEnd}</td> <td>{item.EducationGroup.Name}</td> <td>{isAttestation}<b>{item.SubjectDetails.FullSubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
+            var row = $"<tr> <td>{item.NumPair}.{item.NumLesson}</td> <td>{durations}</td> <td>{item.EducationGroup?.Name}</td> <td>{isAttestation}<b>{item.SubjectDetails.FullSubjectName}</b> {teachers}</td> <td>{cabs}</td> </tr>";
             _rows += row;
         }
     }
 
-    public string GetRowTitle(IResultOutScheduleFromDate result, ScheduleSearchType searchType)
+    public string? GetRowTitle(IResultOutScheduleFromDate result, ScheduleSearchType searchType)
     {
         
         if(result.Lessons.Count is 0) return "unknow";
@@ -48,7 +51,7 @@ public class HtmlBuilderSchedule : Common.BuilderHtml
             return lessonFirst.Identity.FirstOrDefault()?.Name ?? string.Empty;
         
         if (searchType == ScheduleSearchType.Group)
-            return lessonFirst.EducationGroup.Name;
+            return lessonFirst.EducationGroup?.Name;
         
         if (searchType == ScheduleSearchType.Cab)
             return lessonFirst.Cabs.FirstOrDefault()?.Adress ?? string.Empty;

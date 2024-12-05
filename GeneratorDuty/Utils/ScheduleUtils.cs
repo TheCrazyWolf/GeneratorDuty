@@ -44,12 +44,16 @@ public static class ScheduleUtils
                     current + (lesson.Identity.Count >= 2 ? $"{teacher.ShortName}," : $"{teacher.ShortName}"));
             string cabs = lesson.Cabs.Aggregate(string.Empty,
                 (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"{cab.Auditory}," : $"{cab.Auditory}"));
+            
+            string durations = lesson.Durations.Aggregate(string.Empty,
+                (current, duration) => current + (lesson.Cabs.Count >= 1 ? $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}," : $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}"));
+            
             msg.AppendLine(
-                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{lesson.DurationStart.ToString()}-{lesson.DurationEnd.ToString()}</b>");
+                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{durations}</b>");
             var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
             msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.FullSubjectName}");
             msg.AppendLine($"{teachers}");
-            msg.AppendLine($"Каб: <b>{cabs}</b> • {lesson.EducationGroup.Name}</blockquote>");
+            msg.AppendLine($"Каб: <b>{cabs}</b> • {lesson.EducationGroup?.Name}</blockquote>");
         }
 
         return msg.ToString();
