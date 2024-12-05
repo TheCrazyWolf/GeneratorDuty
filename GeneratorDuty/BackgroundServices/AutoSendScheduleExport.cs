@@ -36,7 +36,11 @@ public class AutoSendScheduleExport(
 
             var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoExport(true);
 
-            if (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) return;
+            if (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
+            {
+                await Task.Delay(1000);
+                return;
+            }
 
             foreach (var item in scheduleProps.Where(item => item.LastResult != DateTime.Now.ToString("yyyy-MM-dd")))
             {
@@ -50,6 +54,7 @@ public class AutoSendScheduleExport(
                 {
                     logger.LogInformation(
                         $"Скрипт № {item.Id} отработан: Расписание на {dateTime.ToString(CultureInfo.InvariantCulture)} - 0 пар");
+                    await Task.Delay(1000);
                     continue;
                 }
 
@@ -81,8 +86,9 @@ public class AutoSendScheduleExport(
                 }*/
 
                 logger.LogInformation($"Скрипт № {item.Id} Завершен");
-                await Task.Delay(15000);
             }
+            
+            await Task.Delay(15000);
         }
     }
 }

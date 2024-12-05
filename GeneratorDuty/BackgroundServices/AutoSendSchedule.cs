@@ -50,6 +50,7 @@ public class AutoSendSchedule(
                 {
                     logger.LogInformation(
                         $"Скрипт № {item.Id} отработан: Расписание на {dateTime.ToString(CultureInfo.InvariantCulture)} - 0 пар");
+                    await Task.Delay(1000);
                     continue;
                 }
 
@@ -59,6 +60,7 @@ public class AutoSendSchedule(
                 {
                     logger.LogInformation(
                         $"Скрипт № {item.Id} отработан: Прошлый результат: {item.LastResult}. Новый {md5New}");
+                    await Task.Delay(1000);
                     continue;
                 }
 
@@ -85,8 +87,10 @@ public class AutoSendSchedule(
                 }*/
 
                 logger.LogInformation($"Скрипт № {item.Id} Завершен");
-                await Task.Delay(1000);
+                await Task.Delay(1500);
             }
+            
+            await Task.Delay(300000);
         }
     }
 }
