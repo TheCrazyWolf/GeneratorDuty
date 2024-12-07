@@ -30,7 +30,7 @@ public class MigrateCommand(DutyRepository repository) : BaseCommand
         prop.IsMigrated = !prop.IsMigrated;
         await repository.ScheduleProps.Update(prop);
 
-        string messageNotify = prop.IsAutoSend
+        string messageNotify = prop.IsMigrated
             ? "✅ Эта беседа перенесена на новый движок"
             : "ℹ️ Эта беседа возращена на старый движок";
 
