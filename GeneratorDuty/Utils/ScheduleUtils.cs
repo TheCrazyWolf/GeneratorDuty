@@ -46,7 +46,7 @@ public static class ScheduleUtils
                 (current, cab) => current + (lesson.Cabs.Count >= 2 ? $"{cab.Auditory}," : $"{cab.Auditory}"));
             
             string durations = lesson.Durations.Aggregate(string.Empty,
-                (current, duration) => current + (lesson.Cabs.Count >= 1 ? $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}," : $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}"));
+                (current, duration) => current + (lesson.Cabs.Count >= 1 ? $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()};  " : $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}"));
             
             msg.AppendLine(
                 $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{durations}</b>");
