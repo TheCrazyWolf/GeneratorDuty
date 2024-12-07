@@ -1,4 +1,5 @@
 ﻿using GeneratorDuty.Models;
+using GeneratorDuty.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeneratorDuty.Database;
@@ -10,6 +11,8 @@ public sealed class DutyContext : DbContext
     public DbSet<ScheduleProp> ScheduleProps { get; set; }
     public DbSet<LogDutyMember> LogDutyMembers { get; set; }
     public DbSet<LogDutyMemberPriority> LogDutyMemberPriorities { get; set; }
+    
+    public DbSet<ScheduleHistory> History { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
