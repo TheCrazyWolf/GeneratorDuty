@@ -46,7 +46,7 @@ public class AutoSendScheduleNew(
                     
                     if (result.Lessons.Count is 0)
                     {
-                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString(CultureInfo.InvariantCulture)} - 0 пар");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()} - 0 пар");
                         await Task.Delay(1000);
                         date = date.AddDays(1);
                         continue; 
