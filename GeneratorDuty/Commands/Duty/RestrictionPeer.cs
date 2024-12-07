@@ -24,7 +24,7 @@ public class RestrictionPeer(DutyRepository repository) : BaseCommand
             return;
         }
 
-        if (await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
+        if (!await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
         {
             await client.TrySendMessage(message.Chat.Id, $"ℹ️ Это действие могут выполнить только администраторы чата");
             return;
