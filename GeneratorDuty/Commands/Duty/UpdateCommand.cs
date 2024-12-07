@@ -40,7 +40,7 @@ public class UpdateCommand(DutyRepository repository) : BaseCommand
 
         if (membersArray.Length is 0 or 1)
         {
-            await client.TrySendMessage(message.Chat.Id, $"Слишком короткий список");
+            await client.TrySendMessage(message.Chat.Id, _usage);
             return;
         }
 
