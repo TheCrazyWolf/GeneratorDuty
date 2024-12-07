@@ -6,6 +6,7 @@ using GeneratorDuty.Repository;
 using GeneratorDuty.Services;
 using GeneratorDuty.Telegrams;
 using GeneratorDuty.Telegrams.Implementations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -36,4 +37,11 @@ builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleNew>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
 var host = builder.Build();
+
+using (var scope = host.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<DutyContext>();
+    dbContext.Database.Migrate();
+}
+
 host.Run();

@@ -6,7 +6,6 @@ namespace GeneratorDuty.Database;
 
 public sealed class DutyContext : DbContext
 {
-    public DutyContext() => Database.MigrateAsync();
     public DbSet<MemberDuty> MemberDuties { get; set; }
     public DbSet<ScheduleProp> ScheduleProps { get; set; }
     public DbSet<LogDutyMember> LogDutyMembers { get; set; }

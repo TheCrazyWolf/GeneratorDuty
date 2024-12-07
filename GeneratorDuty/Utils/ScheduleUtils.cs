@@ -49,7 +49,7 @@ public static class ScheduleUtils
                 (current, duration) => current + (lesson.Cabs.Count >= 1 ? $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()};  " : $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}"));
             
             msg.AppendLine(
-                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{durations}</b>");
+                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{lesson.DurationStart} - {lesson.DurationEnd}</b>");
             var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
             msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.FullSubjectName}");
             msg.AppendLine($"{teachers}");
