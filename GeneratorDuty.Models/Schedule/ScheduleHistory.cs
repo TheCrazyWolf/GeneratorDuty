@@ -6,7 +6,6 @@ namespace GeneratorDuty.Models.Schedule;
 public class ScheduleHistory : CommonEntity
 {
     public long? IdPeer { get; set; }
-    [ForeignKey("IdPeer")] public ScheduleProp? PropPeer { get; set; }
     public DateOnly Date { get; set; }
     public string Result { get; set; } = string.Empty;
 }

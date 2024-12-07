@@ -88,8 +88,6 @@ namespace GeneratorDuty.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdPeer");
-
                     b.ToTable("History");
                 });
 
@@ -151,15 +149,6 @@ namespace GeneratorDuty.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Duty");
-                });
-
-            modelBuilder.Entity("GeneratorDuty.Models.Schedule.ScheduleHistory", b =>
-                {
-                    b.HasOne("GeneratorDuty.Models.ScheduleProp", "PropPeer")
-                        .WithMany()
-                        .HasForeignKey("IdPeer");
-
-                    b.Navigation("PropPeer");
                 });
 #pragma warning restore 612, 618
         }

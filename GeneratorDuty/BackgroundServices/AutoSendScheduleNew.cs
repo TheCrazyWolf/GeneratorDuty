@@ -48,13 +48,15 @@ public class AutoSendScheduleNew(
                     {
                         logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString(CultureInfo.InvariantCulture)} - 0 пар");
                         await Task.Delay(1000);
-                        continue;
+                        date = date.AddDays(1);
+                        continue; 
                     }
                     
                     if (history.Result == result.GetStringFromRasp())
                     {
-                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString(CultureInfo.InvariantCulture)} - не изменилось");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()} - не изменилось");
                         await Task.Delay(1000);
+                        date = date.AddDays(1);
                         continue;
                     }
                     
@@ -63,19 +65,19 @@ public class AutoSendScheduleNew(
                     if (!success)
                     {
                         scheduleProp.Fails++;
-                        logger.LogInformation($"Скрипт № {scheduleProp.Id} не отработан: Расписание на {date.ToString(CultureInfo.InvariantCulture)}. Ошибки при отправке сообщения");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} не отработан: Расписание на {date.ToString()}. Ошибки при отправке сообщения");
                     }
 
                     if (success)
                     {
                         scheduleProp.Fails = 0;
                         history.Result = result.GetStringFromRasp();
-                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString(CultureInfo.InvariantCulture)}");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()}");
                     }
 
                     await repository.ScheduleProps.Update(scheduleProp);
                     await repository.ScheduleHistory.UpdateScheduleHistory(history);
-                    
+                    date = date.AddDays(1);
                     await Task.Delay(3000);
                 }
                 
