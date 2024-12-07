@@ -30,7 +30,7 @@ public class RestrictionPeer(DutyRepository repository) : BaseCommand
             return;
         }
         
-        prop.IsRequiredAdminRights = !prop.IsAutoSend;
+        prop.IsRequiredAdminRights = !prop.IsRequiredAdminRights;
         await repository.ScheduleProps.Update(prop);
 
         string messageNotify = prop.IsAutoSend
