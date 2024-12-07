@@ -33,7 +33,7 @@ public class RestrictionPeer(DutyRepository repository) : BaseCommand
         prop.IsRequiredAdminRights = !prop.IsRequiredAdminRights;
         await repository.ScheduleProps.Update(prop);
 
-        string messageNotify = prop.IsAutoSend
+        string messageNotify = prop.IsRequiredAdminRights
             ? "✅ Часть функционала ограничена будет доступна только администраторам: (подтверждения дежурного)"
             : "ℹ️ Ограничения в чате сняты";
         
