@@ -43,7 +43,7 @@ public class UpdateCommand(DutyRepository repository) : BaseCommand
         int count = 0;
         foreach (var item in d)
         {
-            if(string.IsNullOrEmpty(item)) continue;
+            if(string.IsNullOrEmpty(item) || string.IsNullOrWhiteSpace(item)) continue;
 
             await repository.Members.Create(new MemberDuty
             {
