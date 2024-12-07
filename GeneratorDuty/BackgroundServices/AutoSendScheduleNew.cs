@@ -11,7 +11,7 @@ namespace GeneratorDuty.BackgroundServices;
 
 public class AutoSendScheduleNew(
     ITelegramBotClient client, DutyRepository repository, ClientSamgkApi clientSamgkApi,
-    ILogger<AutoSendSchedule> logger) : BackgroundServiceBase
+    ILogger<AutoSendScheduleNew> logger) : BackgroundServiceBase
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
