@@ -22,9 +22,10 @@ public class SchedulePropsRepository(DutyContext ef)
         return await ef.ScheduleProps.FirstOrDefaultAsync(x=> x.IdPeer == chatId);
     }
     
-    public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromAutoSend(bool isConfiguredAutoSend)
+    public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromAutoSend(bool isConfiguredAutoSend, bool isMigrated = false)
     {
-        return await ef.ScheduleProps.Where(x=> x.IsAutoSend == isConfiguredAutoSend).ToListAsync();
+        return await ef.ScheduleProps.Where(x=> x.IsAutoSend == isConfiguredAutoSend)
+            .Where(x=> x.IsMigrated == isMigrated).ToListAsync();
     }
     
     public async Task<IEnumerable<ScheduleProp>> GetSchedulePropsFromAutoExport(bool isConfiguredAutoExport)

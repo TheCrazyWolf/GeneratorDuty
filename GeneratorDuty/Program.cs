@@ -33,6 +33,7 @@ builder.Services.AddSingleton<ClientSamgkApi>();
 builder.Services.AddSingleton<MemoryExceptionDuty>();
 builder.Services.AddTransient<DutyRepository>();
 builder.Services.AddHostedService<AutoSendSchedule>();
+builder.Services.AddHostedService<AutoSendScheduleNew>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
 var host = builder.Build();
 host.Run();

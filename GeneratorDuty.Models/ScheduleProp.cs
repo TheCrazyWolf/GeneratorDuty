@@ -14,5 +14,5 @@ public class ScheduleProp : CommonEntity
     public int Fails { get; set; }
     
     public bool IsRequiredAdminRights { get; set; } = false;
-    public bool IsMigrated { get; set; } = false;
+    public bool IsMigrated { get; set; } = true;
 }
