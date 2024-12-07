@@ -23,6 +23,7 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
 {
     private readonly IReadOnlyCollection<BaseCommand> _commands = new List<BaseCommand>()
     {
+        new SayCommand(ef),
         new SetCommand(ef, clientSamgk),
         new GetCommand(ef,cache),
         new UpdateCommand(ef),
@@ -31,10 +32,10 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new ExportCommand(clientSamgk),
         new SAutoCommand(ef),
         new StartCommand(),
-        new SayCommand(ef),
         new HistoryCommand(ef),
         new ForceCommand(ef),
-        new RestrictionPeer(ef)
+        new RestrictionPeer(ef),
+        new MigrateCommand(ef)
     };
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
