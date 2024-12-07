@@ -1,5 +1,4 @@
 ﻿using GeneratorDuty.Common;
-using GeneratorDuty.CustomRights;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
@@ -18,7 +17,11 @@ public class DutyAccept(DutyRepository repository) : CallQuery
         if (callbackQuery.Message is null || array is null || array.Length == 0 ||
             !long.TryParse(array[0], out var idMemberDuty)) return;
         
-        if (Restrictions.ChatIdsRequiredAdminRights.Contains(callbackQuery.Message.Chat.Id) && !await client.IsUserAdminInChat(callbackQuery.From.Id, callbackQuery.Message.Chat.Id))
+        var prop = await repository.ScheduleProps.GetSchedulePropFromChat(callbackQuery.Message.Chat.Id);
+
+        if (prop is null) return;
+        
+        if (prop.IsRequiredAdminRights && !await client.IsUserAdminInChat(callbackQuery.From.Id, callbackQuery.Message.Chat.Id))
         {
             await client.AnswerCallbackQueryAsync(callbackQuery.Id, "❌ \n\nВ этом чате данное действие могут выполнять только админы беседы", true);
             return;

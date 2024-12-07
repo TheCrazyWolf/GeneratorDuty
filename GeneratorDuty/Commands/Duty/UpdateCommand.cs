@@ -1,5 +1,4 @@
 using GeneratorDuty.Common;
-using GeneratorDuty.CustomRights;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
@@ -11,13 +10,27 @@ namespace GeneratorDuty.Commands.Duty;
 public class UpdateCommand(DutyRepository repository) : BaseCommand
 {
     public override string Command { get; } = "/update";
+    
+    private readonly string _usage =
+        $"ℹ️ Внесите фамилии через команду /update Фамилия И.О. \n" +
+        $"Фамилия И.О.\n" +
+        $"и т.д.\n" +
+        $"Обязательно каждую фамилию с новой строки";
 
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
     {
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
         
-        if (Restrictions.ChatIdsRequiredAdminRights.Contains(message.Chat.Id) && !await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
+        var prop = await repository.ScheduleProps.GetSchedulePropFromChat(message.Chat.Id);
+
+        if (prop is null)
+        {
+            await client.TrySendMessage(message.Chat.Id, _usage);
+            return;
+        }
+        
+        if (prop.IsRequiredAdminRights && !await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
         {
             await client.TrySendMessage(message.Chat.Id, "В этом чате данное действие могут выполнять только админы беседы");
             return;

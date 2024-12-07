@@ -1,5 +1,4 @@
 using GeneratorDuty.Common;
-using GeneratorDuty.CustomRights;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Repository;
@@ -20,7 +19,15 @@ public class ForceCommand(DutyRepository repository) : BaseCommand
     {
         if (string.IsNullOrEmpty(message.Text) || message.From is null) return;
         
-        if (Restrictions.ChatIdsRequiredAdminRights.Contains(message.Chat.Id) && !await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
+        var prop = await repository.ScheduleProps.GetSchedulePropFromChat(message.Chat.Id);
+
+        if (prop is null)
+        {
+            await client.TrySendMessage(message.Chat.Id, _usage);
+            return;
+        }
+        
+        if (prop.IsRequiredAdminRights && !await client.IsUserAdminInChat(message.From.Id, message.Chat.Id))
         {
             await client.TrySendMessage(message.Chat.Id, "В этом чате данное действие могут выполнять только админы беседы");
             return;
