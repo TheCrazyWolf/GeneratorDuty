@@ -88,6 +88,9 @@ namespace GeneratorDuty.Migrations
                     b.Property<bool>("IsAutoSend")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("IsRequiredAdminRights")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastResult")
                         .IsRequired()
                         .HasColumnType("TEXT");
