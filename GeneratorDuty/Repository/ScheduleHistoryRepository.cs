@@ -29,6 +29,13 @@ public class ScheduleHistoryRepository(DutyContext ef)
         await ef.SaveChangesAsync();
         return scheduleHistory;
     }
+    
+    public async Task<ScheduleHistory> CreateScheduleHistory(ScheduleHistory scheduleHistory)
+    {
+        await ef.AddAsync(scheduleHistory);
+        await ef.SaveChangesAsync();
+        return scheduleHistory;
+    }
 
     public async Task UpdateScheduleHistory(ScheduleHistory scheduleHistory)
     {
