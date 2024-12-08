@@ -42,13 +42,15 @@ public class AutoSendScheduleExport(
                 return;
             }
 
+            var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(DateOnly.FromDateTime(dateTime));
+            
             foreach (var item in scheduleProps.Where(item => item.LastResult != DateTime.Now.ToString("yyyy-MM-dd")))
             {
                 logger.LogInformation($"Скрипт № {item.Id} начал работать");
                 var builderSchedule = new HtmlBuilderSchedule();
 
                 var allExportResult = await clientSamgkApi.Schedule
-                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, delay: 1500);
+                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont, 1500);
 
                 if (allExportResult.Count is 0)
                 {

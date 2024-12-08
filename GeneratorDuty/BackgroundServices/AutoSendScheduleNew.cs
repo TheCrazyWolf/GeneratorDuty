@@ -38,11 +38,13 @@ public class AutoSendScheduleNew(
                 {
                     // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
                     while (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) date = date.AddDays(1);
+
+                    var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(date);
                     
                     logger.LogInformation($"Скрипт № {scheduleProp.Id}. Проверка: {date.ToString(CultureInfo.InvariantCulture)}");
                     var history = await repository.ScheduleHistory.CreateOrGetScheduleHistory(scheduleProp.IdPeer, date);
                     
-                    var result = await clientSamgkApi.Schedule.GetScheduleAsync(date, scheduleProp.SearchType, scheduleProp.Value);
+                    var result = await clientSamgkApi.Schedule.GetScheduleAsync(date, scheduleProp.SearchType, scheduleProp.Value, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont);
                     
                     if (result.Lessons.Count is 0)
                     {
