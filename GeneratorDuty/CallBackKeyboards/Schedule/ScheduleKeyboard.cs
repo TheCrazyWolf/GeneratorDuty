@@ -29,7 +29,6 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
             return;
         }
         
-        
         if (date < DateTime.Now.Date)
         {
             var cached =

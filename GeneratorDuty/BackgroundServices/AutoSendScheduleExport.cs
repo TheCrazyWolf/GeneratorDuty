@@ -48,7 +48,7 @@ public class AutoSendScheduleExport(
                 var builderSchedule = new HtmlBuilderSchedule();
 
                 var allExportResult = await clientSamgkApi.Schedule
-                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, 1500);
+                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, delay: 1500);
 
                 if (allExportResult.Count is 0)
                 {

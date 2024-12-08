@@ -11,6 +11,7 @@ public sealed class DutyContext : DbContext
     public DbSet<LogDutyMember> LogDutyMembers { get; set; }
     public DbSet<LogDutyMemberPriority> LogDutyMemberPriorities { get; set; }
     public DbSet<ScheduleHistory> History { get; set; }
+    public DbSet<ScheduleCustomRules> ScheduleCustomRules { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
