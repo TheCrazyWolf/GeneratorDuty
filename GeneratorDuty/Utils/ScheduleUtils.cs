@@ -47,9 +47,11 @@ public static class ScheduleUtils
             
             string durations = lesson.Durations.Aggregate(string.Empty,
                 (current, duration) => current + (lesson.Cabs.Count >= 1 ? $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()};  " : $"{duration.StartTime.ToString()} - {duration.EndTime.ToString()}"));
+
+            string numpair = lesson.NumLesson is 0 ? $"{lesson.NumPair}" : $"{lesson.NumPair}.{lesson.NumLesson}";
             
             msg.AppendLine(
-                $"<blockquote><b>{lesson.NumPair}.{lesson.NumLesson}</b> | <b>{durations}</b>");
+                $"<blockquote><b>{numpair}</b> | <b>{durations}</b>");
             var isAttestation = lesson.SubjectDetails.IsAttestation ? "<b>[Дифф. зачёт]</b> " : string.Empty;
             msg.AppendLine($"{isAttestation}{lesson.SubjectDetails.FullSubjectName}");
             msg.AppendLine($"{teachers}");
