@@ -29,6 +29,8 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
             return;
         }
         
+        var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(DateOnly.FromDateTime(date));
+        
         if (date < DateTime.Now.Date)
         {
             var cached =
@@ -45,7 +47,7 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
         }
         
         var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(date), 
-            searchType, array[1]);
+            searchType, array[1], rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont);
 
         if (date < DateTime.Now.Date)
         {
