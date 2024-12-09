@@ -11,4 +11,5 @@ public class DutyRepository(DutyContext ef)
     public SchedulePropsRepository ScheduleProps = new SchedulePropsRepository(ef);
     public ScheduleHistoryRepository ScheduleHistory = new ScheduleHistoryRepository(ef);
     public ScheduleRulesRepository ScheduleRules = new ScheduleRulesRepository(ef);
+    public MessageWidgetsRepository MessageWidgets = new MessageWidgetsRepository(ef);
 }
