@@ -37,6 +37,7 @@ builder.Services.AddTransient<DutyRepository>();
 builder.Services.AddHostedService<AutoSendSchedule>();
 builder.Services.AddHostedService<AutoSendScheduleNew>();
 builder.Services.AddHostedService<AutoSendScheduleExport>();
+builder.Services.AddHostedService<AutoPinMessageWithSchedule>();
 var host = builder.Build();
 
 using (var scope = host.Services.CreateScope())

@@ -36,7 +36,7 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new ForceCommand(ef),
         new RestrictionPeer(ef),
         new MigrateCommand(ef),
-        new RuleCommand(ef)
+        new RuleCommand(ef), new WidgetCommand(ef)
     };
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
