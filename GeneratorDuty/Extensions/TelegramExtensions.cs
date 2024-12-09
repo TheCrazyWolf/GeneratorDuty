@@ -7,11 +7,36 @@ namespace GeneratorDuty.Extensions;
 
 public static class TelegramExtensions
 {
-    public static async Task<bool> TrySendMessage(this ITelegramBotClient client, long chatId, string message, IReplyMarkup? replyMarkup = null)
+    public static async Task<Message?> TrySendMessage(this ITelegramBotClient client, long chatId, string message, IReplyMarkup? replyMarkup = null)
     {
         try
         {
-            await client.SendTextMessageAsync(chatId, message, replyMarkup: replyMarkup, parseMode: ParseMode.Html);
+            return await client.SendTextMessageAsync(chatId, message, replyMarkup: replyMarkup, parseMode: ParseMode.Html);
+        }
+        catch 
+        {
+            return null;
+        }
+    }
+    
+    public static async Task<bool> TryPingMessage(this ITelegramBotClient client, long chatId, int messageId)
+    {
+        try
+        {
+            await client.PinChatMessageAsync(chatId, messageId);
+            return true;
+        }
+        catch 
+        {
+            return false;
+        }
+    }
+    
+    public static async Task<bool> TryUnPingMessage(this ITelegramBotClient client, long chatId, int messageId)
+    {
+        try
+        {
+            await client.UnpinChatMessageAsync(chatId, messageId);
             return true;
         }
         catch 

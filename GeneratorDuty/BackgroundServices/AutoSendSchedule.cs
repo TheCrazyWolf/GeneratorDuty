@@ -68,13 +68,13 @@ public class AutoSendSchedule(
 
                 var success = await client.TrySendMessage(item.IdPeer, result.GetStringFromRasp());
 
-                if (!success)
+                if (success is null)
                 {
                     item.Fails++;
                     logger.LogInformation($"Скрипт № {item.Id} не отработан: Ошибки при отправке сообщения");
                 }
 
-                if (success)
+                if (success is not null)
                 {
                     item.Fails = 0;
                     item.LastResult = md5New;

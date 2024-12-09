@@ -64,13 +64,13 @@ public class AutoSendScheduleNew(
                     
                     var success = await client.TrySendMessage(scheduleProp.IdPeer, result.GetStringFromRasp());
 
-                    if (!success)
+                    if (success is null)
                     {
                         scheduleProp.Fails++;
                         logger.LogInformation($"Скрипт № {scheduleProp.Id} не отработан: Расписание на {date.ToString()}. Ошибки при отправке сообщения");
                     }
 
-                    if (success)
+                    if (success is not null)
                     {
                         scheduleProp.Fails = 0;
                         history.Result = result.GetStringFromRasp();
