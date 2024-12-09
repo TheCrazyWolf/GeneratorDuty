@@ -41,6 +41,8 @@ public class AutoPinMessageWithSchedule(
                 if (pinnedMessage == null) continue;
 
                 string builderMessage = string.Empty;
+
+                string changedDates = string.Empty;
                 
                 for (int i = 0; i <= 5; i++)
                 {
@@ -56,19 +58,11 @@ public class AutoPinMessageWithSchedule(
 
                     builderMessage += $"{result.GetStringFromRasp()}";
                     
-                    if (result.Lessons.Count is 0)
+                    if (history.Result != result.GetStringFromRasp())
                     {
-                        todayDate = todayDate.AddDays(1);
-                        continue;
+                        changedDates += $"{result.Date.ToString()}, ";
+                        history.Result = result.GetStringFromRasp();
                     }
-
-                    if (history.Result == result.GetStringFromRasp())
-                    {
-                        todayDate = todayDate.AddDays(1);
-                        continue;
-                    }
-                    
-                    history.Result = result.GetStringFromRasp();
 
                     await repository.ScheduleProps.Update(item);
                     await repository.ScheduleHistory.UpdateScheduleHistory(history);
@@ -77,7 +71,8 @@ public class AutoPinMessageWithSchedule(
 
                 builderMessage += $"Последнее обновление: {DateTime.Now} DateTime.Now.ToString(CultureInfo.CurrentCulture)}}";
                 var success = await client.TryEditMessage(pinnedMessage.ChatId, pinnedMessage.MessageId, builderMessage);
-
+                if (!string.IsNullOrEmpty(changedDates)) await client.TrySendMessage(pinnedMessage.ChatId, $"Обратите внимание на изменения в расписании: {changedDates}");
+                
                 if (!success)
                 {
                     await client.TryDeleteMessage(pinnedMessage.ChatId, pinnedMessage.MessageId);
