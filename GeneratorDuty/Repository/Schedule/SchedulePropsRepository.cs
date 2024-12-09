@@ -1,5 +1,5 @@
-﻿using GeneratorDuty.Database;
-using GeneratorDuty.Models.Properties;
+﻿using GeneratorDuty.Models.Properties;
+using GeneratorDuty.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeneratorDuty.Repository.Schedule;

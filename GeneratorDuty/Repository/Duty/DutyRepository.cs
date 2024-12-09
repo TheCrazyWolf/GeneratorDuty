@@ -1,4 +1,4 @@
-﻿using GeneratorDuty.Database;
+﻿using GeneratorDuty.Repository.Database;
 using GeneratorDuty.Repository.Schedule;
 
 namespace GeneratorDuty.Repository.Duty;

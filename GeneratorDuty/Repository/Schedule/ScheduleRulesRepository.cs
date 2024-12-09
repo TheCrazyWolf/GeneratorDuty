@@ -1,6 +1,6 @@
 ﻿using ClientSamgkOutputResponse.Enums;
-using GeneratorDuty.Database;
 using GeneratorDuty.Models.Schedule;
+using GeneratorDuty.Repository.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeneratorDuty.Repository.Schedule;

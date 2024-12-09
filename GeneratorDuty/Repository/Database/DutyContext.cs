@@ -1,10 +1,9 @@
-﻿using GeneratorDuty.Models;
-using GeneratorDuty.Models.Duty;
+﻿using GeneratorDuty.Models.Duty;
 using GeneratorDuty.Models.Properties;
 using GeneratorDuty.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeneratorDuty.Database;
+namespace GeneratorDuty.Repository.Database;
 
 public sealed class DutyContext : DbContext
 {

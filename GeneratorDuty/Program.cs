@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using ClientSamgk;
 using GeneratorDuty.BackgroundServices;
-using GeneratorDuty.Database;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Repository.Database;
 using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Services;
 using GeneratorDuty.Telegrams;

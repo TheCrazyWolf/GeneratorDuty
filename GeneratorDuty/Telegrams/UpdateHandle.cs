@@ -7,7 +7,6 @@ using GeneratorDuty.Commands.Duty;
 using GeneratorDuty.Commands.Schedule;
 using GeneratorDuty.Commands.Service;
 using GeneratorDuty.Common;
-using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
