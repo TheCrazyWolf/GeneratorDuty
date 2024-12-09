@@ -3,6 +3,7 @@ using ClientSamgk;
 using GeneratorDuty.BackgroundServices;
 using GeneratorDuty.Database;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Services;
 using GeneratorDuty.Telegrams;
 using GeneratorDuty.Telegrams.Implementations;

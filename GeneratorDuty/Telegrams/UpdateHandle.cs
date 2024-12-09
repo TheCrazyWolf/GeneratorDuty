@@ -10,6 +10,7 @@ using GeneratorDuty.Common;
 using GeneratorDuty.Database;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Services;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;

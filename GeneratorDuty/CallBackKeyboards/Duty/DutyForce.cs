@@ -3,6 +3,7 @@ using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
 using GeneratorDuty.Models.Duty;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Repository.Duty;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;

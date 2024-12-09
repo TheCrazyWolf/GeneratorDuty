@@ -4,6 +4,7 @@ using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Repository.Duty;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;

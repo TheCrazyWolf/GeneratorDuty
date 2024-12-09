@@ -1,9 +1,8 @@
 ﻿using GeneratorDuty.Database;
-using GeneratorDuty.Models;
 using GeneratorDuty.Models.Duty;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeneratorDuty.Repository;
+namespace GeneratorDuty.Repository.Duty;
 
 public class MembersRepository(DutyContext ef)
 {

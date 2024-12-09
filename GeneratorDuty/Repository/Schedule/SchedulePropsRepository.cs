@@ -1,10 +1,8 @@
-﻿using System.Collections;
-using GeneratorDuty.Database;
-using GeneratorDuty.Models;
+﻿using GeneratorDuty.Database;
 using GeneratorDuty.Models.Properties;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeneratorDuty.Repository;
+namespace GeneratorDuty.Repository.Schedule;
 
 public class SchedulePropsRepository(DutyContext ef)
 {

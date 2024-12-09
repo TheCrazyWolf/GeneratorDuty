@@ -3,7 +3,7 @@ using GeneratorDuty.Database;
 using GeneratorDuty.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 
-namespace GeneratorDuty.Repository;
+namespace GeneratorDuty.Repository.Schedule;
 
 public class ScheduleRulesRepository(DutyContext ef)
 {

@@ -3,6 +3,7 @@ using ClientSamgk;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository;
+using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Utils;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;

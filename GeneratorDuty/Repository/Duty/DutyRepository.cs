@@ -1,7 +1,7 @@
 ﻿using GeneratorDuty.Database;
-using GeneratorDuty.Models.Schedule;
+using GeneratorDuty.Repository.Schedule;
 
-namespace GeneratorDuty.Repository;
+namespace GeneratorDuty.Repository.Duty;
 
 public class DutyRepository(DutyContext ef)
 {
