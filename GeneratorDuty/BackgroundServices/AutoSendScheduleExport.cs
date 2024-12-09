@@ -22,7 +22,7 @@ public class AutoSendScheduleExport(
     {
         logger.LogInformation($"Запущен сервис");
 
-        while (!stoppingToken.IsCancellationRequested)
+        while (true)
         {
             var dateTime = DateTime.Now;
 
@@ -90,7 +90,7 @@ public class AutoSendScheduleExport(
                 logger.LogInformation($"Скрипт № {item.Id} Завершен");
             }
             
-            await Task.Delay(15000);
+            await Task.Delay(1800000);
         }
     }
 }

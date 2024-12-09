@@ -19,7 +19,7 @@ public class AutoSendSchedule(
     {
         logger.LogInformation($"Запущен сервис");
         
-        while (!stoppingToken.IsCancellationRequested)
+        while (true)
         {
             var dateTime = DateTime.Now;
 

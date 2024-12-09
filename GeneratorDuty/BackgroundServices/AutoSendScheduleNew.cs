@@ -17,7 +17,7 @@ public class AutoSendScheduleNew(
     {
         logger.LogInformation($"Запущен сервис");
         
-        while (!stoppingToken.IsCancellationRequested)
+        while (true)
         {
             if (!CanWorkSerivce(DateTime.Now))
             {
