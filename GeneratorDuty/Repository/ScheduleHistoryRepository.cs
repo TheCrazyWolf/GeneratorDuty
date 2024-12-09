@@ -16,6 +16,14 @@ public class ScheduleHistoryRepository(DutyContext ef)
     {
         return await ef.History.FirstOrDefaultAsync(x=> x.IdPeer == peerId && x.Date == date);
     }
+    
+    public async Task<IList<ScheduleHistory>> GetPinnedMessageFromPeerId(long peerId, DateOnly exceptDate)
+    {
+        return await ef.History.Where(x=> x.IdPeer == peerId)
+            .Where(x=> x.IsPinned == true)
+            .Where(x=> x.Date != exceptDate)
+            .ToListAsync();
+    }
 
     public async Task<ScheduleHistory> CreateScheduleHistory(long peerId, DateOnly date)
     {
@@ -41,5 +49,11 @@ public class ScheduleHistoryRepository(DutyContext ef)
     {
         ef.Update(scheduleHistory);
         await ef.SaveChangesAsync();
+    }
+
+    public async Task ChangeStatusPinnedMessage(ScheduleHistory message, bool newValue)
+    {
+        message.IsPinned = newValue;
+        await UpdateScheduleHistory(message);
     }
 }

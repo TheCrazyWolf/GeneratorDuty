@@ -19,11 +19,11 @@ public static class TelegramExtensions
         }
     }
     
-    public static async Task<bool> TryPingMessage(this ITelegramBotClient client, long chatId, int messageId)
+    public static async Task<bool> TryPinMessage(this ITelegramBotClient client, long? chatId, int messageId)
     {
         try
         {
-            await client.PinChatMessageAsync(chatId, messageId);
+            if (chatId != null) await client.PinChatMessageAsync(chatId, messageId);
             return true;
         }
         catch 
@@ -32,11 +32,11 @@ public static class TelegramExtensions
         }
     }
     
-    public static async Task<bool> TryUnPingMessage(this ITelegramBotClient client, long chatId, int messageId)
+    public static async Task<bool> TryUnPinMessage(this ITelegramBotClient client, long? chatId, int? messageId)
     {
         try
         {
-            await client.UnpinChatMessageAsync(chatId, messageId);
+            if (chatId != null) await client.UnpinChatMessageAsync(chatId, messageId);
             return true;
         }
         catch 
