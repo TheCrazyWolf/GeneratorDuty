@@ -85,8 +85,7 @@ public class AutoPinMessageWithSchedule(
                     var message = await client.TrySendMessage(pinnedMessage.ChatId, builderMessage);
                     if (message is not null)
                     {
-                        await repository.MessageWidgets.CreateMessageWidgetAsync(new MessageWidget()
-                            { ChatId = message.Chat.Id, MessageId = message.MessageId });
+                        await repository.MessageWidgets.UpdateMessageWidgetMessageId(pinnedMessage, message.Chat.Id, message.MessageId);
                         await client.TryPinMessage(message.Chat.Id, message.MessageId);
                     }
                 }

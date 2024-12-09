@@ -43,4 +43,11 @@ public class MessageWidgetsRepository(DutyContext ef)
         }
         await ef.SaveChangesAsync();
     }
+
+    public async Task UpdateMessageWidgetMessageId(MessageWidget pinnedMessage, long chatId, int messageMessageId)
+    {
+        pinnedMessage.MessageId = messageMessageId;
+        pinnedMessage.ChatId = chatId;
+        await UpdateMessageWidgetAsync(pinnedMessage);
+    }
 }

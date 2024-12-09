@@ -29,15 +29,19 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
             return;
         }
 
-        var widget = await repository.MessageWidgets.GetWidgetByChatIdAsync(prop.IdPeer);
+        var widget = await repository.MessageWidgets.GetMessageWidgetsAsync(prop.IdPeer);
 
-        if (widget is not null)
+        if (widget.Any())
         {
             await client.TrySendMessage(message.Chat.Id, $"ℹ️ Виджет с расписанием отключен");
-            await client.TryUnPinMessage(widget.ChatId, widget.MessageId);
-            await client.TryDeleteMessage(widget.ChatId, widget.MessageId);
-            await repository.MessageWidgets.DeleteMessageWidgetAsync(widget);
-            await repository.MessageWidgets.RemoveAllWidgetInChat(prop.IdPeer);
+
+            foreach (var item in widget)
+            {
+                await client.TryUnPinMessage(item.ChatId, item.MessageId);
+                await client.TryDeleteMessage(item.ChatId, item.MessageId);
+                await repository.MessageWidgets.DeleteMessageWidgetAsync(item);
+            }
+            
             return;
         }
         
@@ -49,9 +53,8 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
         
         if (!await client.TryPinMessage(scheduleProp.Chat.Id, scheduleProp.MessageId))
         {
-            await client.TryEditMessage(messageWidget.ChatId, messageWidget.MessageId,
-                "Не удалость настроить виджет. Проверьте права админа");
-            await repository.MessageWidgets.RemoveAllWidgetInChat(prop.IdPeer);
+            await client.TryEditMessage(messageWidget.ChatId, messageWidget.MessageId, "Не удалость настроить виджет. Проверьте права админа");
+            await repository.MessageWidgets.DeleteMessageWidgetAsync(messageWidget);
         }
     }
 }
