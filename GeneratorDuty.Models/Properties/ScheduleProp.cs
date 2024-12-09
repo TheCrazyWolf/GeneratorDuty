@@ -1,7 +1,7 @@
 ﻿using ClientSamgk.Enums;
 using GeneratorDuty.Models.Common;
 
-namespace GeneratorDuty.Models;
+namespace GeneratorDuty.Models.Properties;
 
 public class ScheduleProp : CommonEntity
 {
