@@ -74,6 +74,8 @@ public class AutoSendScheduleNew(
                     {
                         scheduleProp.Fails = 0;
                         history.Result = result.GetStringFromRasp();
+                        history.MessageId = success.MessageId;
+                        history.ChatId = success.Chat.Id;
                         logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()}");
                     }
 
