@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using GeneratorDuty.Models.Common;
 
-namespace GeneratorDuty.Models;
+namespace GeneratorDuty.Models.Duty;
 
 public class LogDutyMemberPriority : CommonEntity
 {

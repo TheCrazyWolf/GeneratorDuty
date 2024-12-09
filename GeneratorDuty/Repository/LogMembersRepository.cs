@@ -1,5 +1,6 @@
 ﻿using GeneratorDuty.Database;
 using GeneratorDuty.Models;
+using GeneratorDuty.Models.Duty;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeneratorDuty.Repository;

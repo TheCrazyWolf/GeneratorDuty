@@ -1,4 +1,5 @@
 ﻿using GeneratorDuty.Models;
+using GeneratorDuty.Models.Duty;
 using GeneratorDuty.Models.Schedule;
 using Microsoft.EntityFrameworkCore;
 

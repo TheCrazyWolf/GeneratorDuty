@@ -1,4 +1,5 @@
 ﻿using GeneratorDuty.Models;
+using GeneratorDuty.Models.Duty;
 
 namespace GeneratorDuty.Services;
 

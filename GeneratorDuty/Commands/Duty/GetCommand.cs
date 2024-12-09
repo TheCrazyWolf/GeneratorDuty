@@ -1,6 +1,7 @@
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models;
+using GeneratorDuty.Models.Duty;
 using GeneratorDuty.Repository;
 using GeneratorDuty.Services;
 using Telegram.Bot;
