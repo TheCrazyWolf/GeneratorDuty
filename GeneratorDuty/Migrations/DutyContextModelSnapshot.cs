@@ -17,7 +17,7 @@ namespace GeneratorDuty.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
-            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMember", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.Duty.LogDutyMember", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace GeneratorDuty.Migrations
                     b.ToTable("LogDutyMembers");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMemberPriority", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.Duty.LogDutyMemberPriority", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,7 +52,7 @@ namespace GeneratorDuty.Migrations
                     b.ToTable("LogDutyMemberPriorities");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.MemberDuty", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.Duty.MemberDuty", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,51 +70,7 @@ namespace GeneratorDuty.Migrations
                     b.ToTable("MemberDuties");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.Schedule.ScheduleCustomRules", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("CallType")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("ShowImportantLesson")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("ShowRussianHorizont")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ScheduleCustomRules");
-                });
-
-            modelBuilder.Entity("GeneratorDuty.Models.Schedule.ScheduleHistory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("Date")
-                        .HasColumnType("TEXT");
-
-                    b.Property<long?>("IdPeer")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Result")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("History");
-                });
-
-            modelBuilder.Entity("GeneratorDuty.Models.ScheduleProp", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.Properties.ScheduleProp", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -154,9 +110,79 @@ namespace GeneratorDuty.Migrations
                     b.ToTable("ScheduleProps");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMember", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.Schedule.MessageWidget", b =>
                 {
-                    b.HasOne("GeneratorDuty.Models.MemberDuty", "Duty")
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("ChatId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MessageWidgets");
+                });
+
+            modelBuilder.Entity("GeneratorDuty.Models.Schedule.ScheduleCustomRules", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("CallType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("ShowImportantLesson")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ShowRussianHorizont")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScheduleCustomRules");
+                });
+
+            modelBuilder.Entity("GeneratorDuty.Models.Schedule.ScheduleHistory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long?>("ChatId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long?>("IdPeer")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsPinned")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("MessageId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Result")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("History");
+                });
+
+            modelBuilder.Entity("GeneratorDuty.Models.Duty.LogDutyMember", b =>
+                {
+                    b.HasOne("GeneratorDuty.Models.Duty.MemberDuty", "Duty")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -164,9 +190,9 @@ namespace GeneratorDuty.Migrations
                     b.Navigation("Duty");
                 });
 
-            modelBuilder.Entity("GeneratorDuty.Models.LogDutyMemberPriority", b =>
+            modelBuilder.Entity("GeneratorDuty.Models.Duty.LogDutyMemberPriority", b =>
                 {
-                    b.HasOne("GeneratorDuty.Models.MemberDuty", "Duty")
+                    b.HasOne("GeneratorDuty.Models.Duty.MemberDuty", "Duty")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);

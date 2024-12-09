@@ -16,10 +16,11 @@ public class MessageWidgetsRepository(DutyContext ef)
         return await ef.MessageWidgets.FirstOrDefaultAsync(w => w.ChatId == chatId);
     }
     
-    public async Task CreateMessageWidgetAsync(MessageWidget messageWidget)
+    public async Task<MessageWidget> CreateMessageWidgetAsync(MessageWidget messageWidget)
     {
         await ef.AddAsync(messageWidget);
         await ef.SaveChangesAsync();
+        return messageWidget;
     }
 
     public async Task DeleteMessageWidgetAsync(MessageWidget messageWidget)
@@ -31,6 +32,15 @@ public class MessageWidgetsRepository(DutyContext ef)
     public async Task UpdateMessageWidgetAsync(MessageWidget messageWidget)
     {
         ef.Update(messageWidget);
+        await ef.SaveChangesAsync();
+    }
+
+    public async Task RemoveAllWidgetInChat(long chatId)
+    {
+        foreach (var widget in (await GetMessageWidgetsAsync(chatId)).ToList())
+        {
+            ef.Remove(widget);
+        }
         await ef.SaveChangesAsync();
     }
 }

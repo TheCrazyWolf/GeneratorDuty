@@ -35,6 +35,9 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
         {
             await client.TrySendMessage(message.Chat.Id, $"ℹ️ Виджет с расписанием отключен");
             await client.TryUnPinMessage(widget.ChatId, widget.MessageId);
+            await client.TryDeleteMessage(widget.ChatId, widget.MessageId);
+            await repository.MessageWidgets.DeleteMessageWidgetAsync(widget);
+            await repository.MessageWidgets.RemoveAllWidgetInChat(prop.IdPeer);
             return;
         }
         
@@ -42,6 +45,13 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
         
         if(scheduleProp is null) return;
         
-        await repository.MessageWidgets.CreateMessageWidgetAsync(new MessageWidget() { ChatId = scheduleProp.Chat.Id, MessageId = scheduleProp.MessageId });
+        var messageWidget = await repository.MessageWidgets.CreateMessageWidgetAsync(new MessageWidget() { ChatId = scheduleProp.Chat.Id, MessageId = scheduleProp.MessageId });
+        
+        if (!await client.TryPinMessage(scheduleProp.Chat.Id, scheduleProp.MessageId))
+        {
+            await client.TryEditMessage(messageWidget.ChatId, messageWidget.MessageId,
+                "Не удалость настроить виджет. Проверьте права админа");
+            await repository.MessageWidgets.RemoveAllWidgetInChat(prop.IdPeer);
+        }
     }
 }

@@ -32,6 +32,11 @@ public class SchedulePropsRepository(DutyContext ef)
         return await ef.ScheduleProps.Where(x=> x.IsAutoExport == isConfiguredAutoExport).ToListAsync();
     }
     
+    public async Task<IEnumerable<ScheduleProp>> GetAllProps()
+    {
+        return await ef.ScheduleProps.ToListAsync();
+    }
+    
     public async Task<ScheduleProp> Create(ScheduleProp scheduleProp)
     {
         await ef.AddAsync(scheduleProp);
