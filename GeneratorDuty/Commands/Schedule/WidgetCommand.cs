@@ -51,7 +51,7 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
             return;
         }
         
-        var scheduleProp = await client.TrySendMessage(prop.IdPeer, "В это сообщении будет расписание на следующие 5 дней. Сообщение обновится автоматические в течение 10-15 минут");
+        var scheduleProp = await client.TrySendMessage(prop.IdPeer, "✅ Это сообщение будет автоматически обновляться с расписанием на 5 дней вперед. Это может занять 5-15 минут, ожидайте. Если активировали виджет ночью, дождитесь обновления на утро.");
         
         if(scheduleProp is null) return;
         
@@ -59,7 +59,7 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
         
         if (!await client.TryPinMessage(scheduleProp.Chat.Id, scheduleProp.MessageId))
         {
-            await client.TryEditMessage(messageWidget.ChatId, messageWidget.MessageId, "Не удалость настроить виджет. Проверьте права админа");
+            await client.TryEditMessage(messageWidget.ChatId, messageWidget.MessageId, "⚠️ Не удалось настроить виджет. Необходимы права администратора чата для: редактирования сообщений, закрепления.");
             await repository.MessageWidgets.DeleteMessageWidgetAsync(messageWidget);
         }
     }
