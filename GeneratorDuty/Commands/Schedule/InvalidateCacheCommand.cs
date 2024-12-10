@@ -40,7 +40,7 @@ public class InvalidateCacheCommand(DutyRepository repository, ClientSamgkApi cl
         }
         
         await client.TrySendMessage(message.Chat.Id, $"ℹ️ Очистка кеша\n\nЕсли возникли проблемы с отображением расписанием, " +
-                                                     $"Вы можете очистить кеш расписания для этой беседы. \n\nОтправьте команду, если согласны - /invalidatecache confirm");
+                                                     $"Вы можете очистить кеш расписания для этой беседы. \n\nОтправьте полностью команду, если согласны - \n/invalidatecache confirm");
         
         
     }

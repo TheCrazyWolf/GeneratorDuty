@@ -15,7 +15,7 @@ public class GetCommand(DutyRepository repository, MemoryExceptionDuty cache) : 
 {
     public override string Command { get; } = "/get";
 
-    private readonly int _daysExcept = 14;
+    private readonly int _daysExcept = 25;
     private readonly string _usage = $"ℹ️ В это беседе не настроены списки дежурных, юзай /update и укажи список группы разделяя переносом строки ФИО";
     
     public override async Task ExecuteAsync(ITelegramBotClient client, Message message)
