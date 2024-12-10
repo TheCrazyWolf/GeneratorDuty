@@ -29,8 +29,12 @@ public class ScheduleRulesRepository(DutyContext ef)
         await ef.SaveChangesAsync();
     }
 
-    public async Task UpdateRule(ScheduleCustomRules schedule)
+    public async Task UpdateRule(ScheduleCustomRules schedule, ScheduleCallType callType,
+        bool showImportantLesson, bool showRussianHorizont)
     {
+        schedule.CallType = callType;
+        schedule.ShowImportantLesson = showImportantLesson;
+        schedule.ShowRussianHorizont = showRussianHorizont;
         ef.Update(schedule);
         await ef.SaveChangesAsync();
     }

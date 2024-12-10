@@ -2,9 +2,7 @@ using ClientSamgkOutputResponse.Enums;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models.Schedule;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
-using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -35,21 +33,14 @@ public class RuleCommand(DutyRepository repository) : BaseCommand
 
         if (rule is null)
         {
-            await repository.ScheduleRules.CreateRule(new ScheduleCustomRules()
-            {
-                Date = DateOnly.FromDateTime(date),
-                CallType = callType,
-                ShowImportantLesson = showImportant,
-                ShowRussianHorizont = showHorizont
-            });
+            await repository.ScheduleRules.CreateRule(new 
+                ScheduleCustomRules(DateOnly.FromDateTime(date), callType,showImportant,showHorizont));
         }
         else
         {
-            rule.CallType = callType;
-            rule.ShowImportantLesson = showImportant;
-            rule.ShowRussianHorizont = showHorizont;
-            await repository.ScheduleRules.UpdateRule(rule);
+            await repository.ScheduleRules.UpdateRule(rule, callType, showImportant, showHorizont);
         }
+        
         await client.TrySendMessage(message.Chat.Id, "Ok");
     }
 }
