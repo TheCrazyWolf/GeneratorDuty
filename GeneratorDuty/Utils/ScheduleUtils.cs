@@ -15,7 +15,7 @@ public static class ScheduleUtils
             $"Расписание на {scheduleFromDate.Date.ToString("dd.MM.yyyy")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek).ToUpperFirstLetter()}");
 
         msg.AppendLine(scheduleFromDate.Lessons.Count is 0
-            ? "<blockquote> Расписание еще не внесено</blockquote>"
+            ? "<blockquote> Расписание еще не внесено</blockquote>\n"
             : scheduleFromDate.Lessons.GetStringFromLesson());
         
         return msg.ToString();
