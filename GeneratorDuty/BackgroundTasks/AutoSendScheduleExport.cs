@@ -21,7 +21,7 @@ public class AutoSendScheduleExport(
     {
         logger.LogInformation($"Запущен сервис");
 
-        while (true)
+        while (!stoppingToken.IsCancellationRequested)
         {
             var dateTime = DateTime.Now;
 

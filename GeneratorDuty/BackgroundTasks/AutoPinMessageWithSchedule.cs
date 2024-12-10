@@ -18,7 +18,7 @@ public class AutoPinMessageWithSchedule(
     {
         logger.LogInformation($"Запущен сервис");
 
-        while (true)
+        while (!stoppingToken.IsCancellationRequested)
         {
             if (!CanWorkSerivce(DateTime.Now))
             {
