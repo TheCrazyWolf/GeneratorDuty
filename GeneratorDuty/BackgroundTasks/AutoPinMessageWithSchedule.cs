@@ -41,11 +41,6 @@ public class AutoPinMessageWithSchedule(
                 string builderMessage = string.Empty;
 
                 string changedDates = string.Empty;
-
-                if (item.Value is "754")
-                {
-                    Console.WriteLine();
-                }
                 
                 for (int i = 0; i < DaysCanBeChecked; i++)
                 {
