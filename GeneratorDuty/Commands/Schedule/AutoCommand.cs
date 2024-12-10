@@ -27,9 +27,16 @@ public class AutoCommand(DutyRepository repository) : BaseCommand
             await client.TrySendMessage(message.Chat.Id, _usage);
             return;
         }
-
-        prop.IsAutoSend = !prop.IsAutoSend;
-        await repository.ScheduleProps.Update(prop);
+        
+        var widget = await repository.MessageWidgets.GetWidgetByChatIdAsync(prop.IdPeer);
+        
+        if (widget is not null)
+        {
+            await client.TrySendMessage(message.Chat.Id, $"ℹ️ Вы не можете использовать авто-отправку, с активными виджетами. Оключите /widget, затем активируйте /auto");
+            return;
+        }
+        
+        await repository.ScheduleProps.UpdateAutoSend(prop,!prop.IsAutoSend);
 
         string messageNotify = prop.IsAutoSend
             ? "✅ Авто-рассылка расписания включена"

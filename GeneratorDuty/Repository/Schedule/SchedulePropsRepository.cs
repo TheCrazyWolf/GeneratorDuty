@@ -61,4 +61,10 @@ public class SchedulePropsRepository(DutyContext ef)
     {
         return await ef.ScheduleProps.ToListAsync();
     }
+
+    public async Task UpdateAutoSend(ScheduleProp prop, bool newValue)
+    {
+        prop.IsAutoSend = newValue;
+        await Update(prop);
+    }
 }
