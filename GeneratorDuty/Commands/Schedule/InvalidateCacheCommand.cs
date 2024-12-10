@@ -13,6 +13,7 @@ namespace GeneratorDuty.Commands.Schedule;
 
 public class InvalidateCacheCommand(DutyRepository repository, ClientSamgkApi clientSamgkApi) : BaseCommand
 {
+    private readonly long _idAdmin = 208049718;
     public override string Command { get; } = "/invalidatecache";
     // options - clear
     // global - глобальный кеш
@@ -22,7 +23,7 @@ public class InvalidateCacheCommand(DutyRepository repository, ClientSamgkApi cl
 
         message.Text = message.Text.GetReplacedCommandFromDomain().Replace(Command, string.Empty);
 
-        if (message.Text.Contains("global"))
+        if (message.Text.Contains("global") && message.From.Id == _idAdmin)
         {
             clientSamgkApi.Cache.Clear();
             var count = await repository.ScheduleHistory.InvalidateLocalCacheGlobal();
