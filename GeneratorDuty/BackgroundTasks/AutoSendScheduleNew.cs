@@ -3,8 +3,7 @@ using GeneratorDuty.Repository.Duty;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 
-namespace GeneratorDuty.
-    BackgroundTasks;
+namespace GeneratorDuty.BackgroundTasks;
 
 public class AutoSendScheduleNew(
     ITelegramBotClient client,

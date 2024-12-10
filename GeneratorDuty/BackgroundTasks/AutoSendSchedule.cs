@@ -71,21 +71,21 @@ public class AutoSendSchedule(
                         continue;
                     }
 
-                    var success = await client.TrySendMessage(scheduleProp.IdPeer, result.GetStringFromRasp());
+                    var message = await client.TrySendMessage(scheduleProp.IdPeer, result.GetStringFromRasp());
 
-                    if (success is null)
+                    if (message is null)
                     {
                         scheduleProp.Fails++;
                         logger.LogInformation(
                             $"Скрипт № {scheduleProp.Id} не отработан: Расписание на {date.ToString()}. Ошибки при отправке сообщения");
                     }
 
-                    if (success is not null)
+                    if (message is not null)
                     {
                         scheduleProp.Fails = 0;
                         history.Result = result.GetStringFromRasp();
-                        history.MessageId = success.MessageId;
-                        history.ChatId = success.Chat.Id;
+                        history.MessageId = message.MessageId;
+                        history.ChatId = message.Chat.Id;
                         logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()}");
                     }
 
