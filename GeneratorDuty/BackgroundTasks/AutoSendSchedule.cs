@@ -73,8 +73,7 @@ public class AutoSendSchedule(
                     if (message is null)
                     {
                         scheduleProp.Fails++;
-                        logger.LogInformation(
-                            $"Скрипт № {scheduleProp.Id} не отработан: Расписание на {date.ToString()}. Ошибки при отправке сообщения");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} не отработан: Расписание на {date.ToString()}. Ошибки при отправке сообщения");
                     }
 
                     if (message is not null)
