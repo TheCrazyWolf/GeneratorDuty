@@ -38,6 +38,11 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         new MigrateCommand(ef),
         new RuleCommand(ef), new WidgetCommand(ef)
     };
+    
+    private readonly IReadOnlyCollection<BaseCommand> _activity = new List<BaseCommand>()
+    {
+        new AutoPinMessageCommand(ef),
+    };
 
     private readonly IReadOnlyCollection<CallQuery> _callQueries = new List<CallQuery>()
     {
@@ -52,6 +57,8 @@ public class UpdateHandle(DutyRepository ef, ClientSamgkApi clientSamgk, MemoryE
         {
             case UpdateType.Message when update.Message?.From != null:
             {
+                foreach (var item in _activity) await item.ExecuteAsync(botClient, update.Message);
+                
                 foreach (var command in _commands)
                 {
                     if(!command.Contains(update.Message)) continue;

@@ -31,16 +31,21 @@ public class AutoPinMessageWithSchedule(
 
             var scheduleProps = await repository.ScheduleProps.GetAllProps();
 
-            DateOnly todayDate = DateOnly.FromDateTime(DateTime.Now);
-
             foreach (var item in scheduleProps)
             {
+                DateOnly todayDate = DateOnly.FromDateTime(DateTime.Now);
+                
                 var pinnedMessage = await repository.MessageWidgets.GetWidgetByChatIdAsync(item.IdPeer);
                 if (pinnedMessage == null) continue;
 
                 string builderMessage = string.Empty;
 
                 string changedDates = string.Empty;
+
+                if (item.Value is "754")
+                {
+                    Console.WriteLine();
+                }
                 
                 for (int i = 0; i < DaysCanBeChecked; i++)
                 {
