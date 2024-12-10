@@ -51,7 +51,7 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
             return;
         }
         
-        var scheduleProp = await client.TrySendMessage(prop.IdPeer, "эт сообщение будет автоматически обновлено");
+        var scheduleProp = await client.TrySendMessage(prop.IdPeer, "В это сообщении будет расписание на следующие 5 дней. Сообщение обновится автоматические в течение 10-15 минут");
         
         if(scheduleProp is null) return;
         
