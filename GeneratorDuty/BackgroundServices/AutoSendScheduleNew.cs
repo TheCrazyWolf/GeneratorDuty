@@ -23,7 +23,7 @@ public class AutoSendScheduleNew(
             if (!CanWorkSerivce(DateTime.Now))
             {
                 await Task.Delay(1000);
-                return;
+                continue;
             }
 
             logger.LogInformation($"Запуск скрипта по расписанию");
