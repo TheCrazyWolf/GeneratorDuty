@@ -38,15 +38,14 @@ public class AutoSendSchedule(
                 var date = DateOnly.FromDateTime(DateTime.Now);
 
                 logger.LogInformation($"Скрипт № {scheduleProp.Id} начал работать");
+               
                 for (int i = 0; i < DaysCanBeChecked; i++)
                 {
-                    // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
                     while (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) date = date.AddDays(1);
 
                     var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(date);
 
-                    logger.LogInformation(
-                        $"Скрипт № {scheduleProp.Id}. Проверка: {date.ToString(CultureInfo.InvariantCulture)}");
+                    logger.LogInformation($"Скрипт № {scheduleProp.Id}. Проверка: {date.ToString(CultureInfo.InvariantCulture)}");
                     var history =
                         await repository.ScheduleHistory.CreateOrGetScheduleHistory(scheduleProp.IdPeer, date);
 
@@ -55,8 +54,7 @@ public class AutoSendSchedule(
 
                     if (result.Lessons.Count is 0)
                     {
-                        logger.LogInformation(
-                            $"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()} - 0 пар");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()} - 0 пар");
                         await Task.Delay(1000);
                         date = date.AddDays(1);
                         continue;
@@ -64,8 +62,7 @@ public class AutoSendSchedule(
 
                     if (history.Result == result.GetStringFromRasp())
                     {
-                        logger.LogInformation(
-                            $"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()} - не изменилось");
+                        logger.LogInformation($"Скрипт № {scheduleProp.Id} отработан: Расписание на {date.ToString()} - не изменилось");
                         await Task.Delay(1000);
                         date = date.AddDays(1);
                         continue;
