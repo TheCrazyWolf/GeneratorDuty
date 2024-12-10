@@ -19,13 +19,12 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
     {
         var array = TryGetArrayFromCallBack(callbackQuery);
         
-        // example: schedule <type> <value> <date>
+        //  schedule <type> <value> <date>
         if (callbackQuery.Message is null || array is null || array.Length == 0 ||
             !Enum.TryParse<ScheduleSearchType>(array[0], out var searchType) || !DateTime.TryParse(array[2], out var date))
         {
             if (callbackQuery.Message != null)
-                await client.EditMessageReplyMarkupAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId,
-                    replyMarkup: null);
+                await client.TryDeleteMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId);
             return;
         }
         
@@ -63,7 +62,7 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
     
     public static IList<IList<InlineKeyboardButton>> GenerateKeyboardOnSchedule(DateTime date, ScheduleSearchType type, string value)
     {
-        // example: schedule <type> <value> <date>
+        // schedule <type> <value> <date>
         return new List<IList<InlineKeyboardButton>>
         {
             new List<InlineKeyboardButton>
