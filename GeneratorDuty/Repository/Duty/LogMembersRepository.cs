@@ -18,9 +18,11 @@ public class LogsMembers(DutyContext ef)
 
     public async Task<LogDutyMember?> FoundInHistory(long memberId, int days)
     {
+        var date = DateTime.Now.AddDays(-days);
+        
         return await ef.LogDutyMembers
             .FirstOrDefaultAsync(x => x.UserId == memberId
-                                      && DateTime.Now.AddDays(-days) <= x.Date);
+                                      && date <= x.Date);
     }
     
     public async Task<LogDutyMember> Create(LogDutyMember log)
