@@ -83,10 +83,14 @@ public static class ScheduleUtils
             {
                 InlineKeyboardButton.WithCallbackData("👈",
                     $"schedule {type} {value} {scheduleFromDate.Date.AddDays(-1):dd.MM.yyyy}"),
+                InlineKeyboardButton.WithCallbackData("👈👈",
+                    $"schedule {type} {value} {scheduleFromDate.Date.AddDays(-7):dd.MM.yyyy}"),
                 InlineKeyboardButton.WithCallbackData("❌",
                     $"schedule clear"),
-                InlineKeyboardButton.WithCallbackData("♻️",
-                    $"schedule {type} {value} {scheduleFromDate.Date:dd.MM.yyyy}"),
+                /*InlineKeyboardButton.WithCallbackData("♻️",
+                    $"schedule {type} {value} {scheduleFromDate.Date:dd.MM.yyyy}"),*/
+                InlineKeyboardButton.WithCallbackData("👉👉",
+                    $"schedule {type} {value} {scheduleFromDate.Date.AddDays(+7):dd.MM.yyyy}"),
                 InlineKeyboardButton.WithCallbackData("👉",
                     $"schedule {type} {value} {scheduleFromDate.Date.AddDays(+1):dd.MM.yyyy}"),
             },

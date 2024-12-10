@@ -69,10 +69,14 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
             {
                 InlineKeyboardButton.WithCallbackData("👈",
                     $"schedule {type} {value} {date.Date.AddDays(-1):dd.MM.yyyy}"),
+                InlineKeyboardButton.WithCallbackData("👈👈",
+                    $"schedule {type} {value} {date.Date.AddDays(-7):dd.MM.yyyy}"),
                 InlineKeyboardButton.WithCallbackData("❌",
                     $"schedule clear"),
-                InlineKeyboardButton.WithCallbackData("♻️",
-                    $"schedule {type} {value} {date.Date:dd.MM.yyyy}"),
+                /*InlineKeyboardButton.WithCallbackData("♻️",
+                    $"schedule {type} {value} {date.Date:dd.MM.yyyy}"),*/
+                InlineKeyboardButton.WithCallbackData("👉👉",
+                    $"schedule {type} {value} {date.Date.AddDays(+7):dd.MM.yyyy}"),
                 InlineKeyboardButton.WithCallbackData("👉",
                     $"schedule {type} {value} {date.Date.AddDays(+1):dd.MM.yyyy}"),
             },
