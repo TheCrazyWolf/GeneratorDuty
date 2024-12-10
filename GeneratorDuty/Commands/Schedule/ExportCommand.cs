@@ -1,5 +1,5 @@
 using ClientSamgk;
-using ClientSamgk.Enums;
+using ClientSamgkOutputResponse.Enums;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;

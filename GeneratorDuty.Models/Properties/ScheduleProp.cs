@@ -1,4 +1,4 @@
-﻿using ClientSamgk.Enums;
+﻿using ClientSamgkOutputResponse.Enums;
 using GeneratorDuty.Models.Common;
 
 namespace GeneratorDuty.Models.Properties;

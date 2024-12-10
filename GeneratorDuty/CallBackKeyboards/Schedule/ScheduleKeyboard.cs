@@ -1,9 +1,8 @@
 ﻿using ClientSamgk;
-using ClientSamgk.Enums;
+using ClientSamgkOutputResponse.Enums;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Models.Schedule;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Utils;
 using Telegram.Bot;

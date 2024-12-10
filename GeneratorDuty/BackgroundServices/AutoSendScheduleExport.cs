@@ -3,7 +3,6 @@ using ClientSamgk;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
@@ -51,7 +50,7 @@ public class AutoSendScheduleExport(
                 var builderSchedule = new HtmlBuilderSchedule();
 
                 var allExportResult = await clientSamgkApi.Schedule
-                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont, 1500);
+                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont, delay: 1500);
 
                 if (allExportResult.Count is 0)
                 {

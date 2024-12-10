@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
-using ClientSamgk.Enums;
+using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 using Telegram.Bot.Types.ReplyMarkups;
 
