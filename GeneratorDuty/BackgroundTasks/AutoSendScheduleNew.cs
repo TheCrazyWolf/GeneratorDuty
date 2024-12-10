@@ -2,13 +2,12 @@
 using ClientSamgk;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Utils;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 
-namespace GeneratorDuty.BackgroundServices;
+namespace GeneratorDuty.BackgroundTasks;
 
 public class AutoSendScheduleNew(
     ITelegramBotClient client, DutyRepository repository, ClientSamgkApi clientSamgkApi,

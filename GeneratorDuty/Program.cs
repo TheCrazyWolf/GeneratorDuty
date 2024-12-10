@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using ClientSamgk;
-using GeneratorDuty.BackgroundServices;
+using GeneratorDuty.BackgroundTasks;
 using GeneratorDuty.Repository.Database;
 using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Services;

@@ -1,27 +1,24 @@
 ﻿using System.Globalization;
 using ClientSamgk;
-using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
 using GeneratorDuty.Repository.Duty;
+using GeneratorDuty.Utils;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
-using Telegram.Bot.Types;
 
+namespace GeneratorDuty.BackgroundTasks;
 
-namespace GeneratorDuty.BackgroundServices;
-
-public class AutoSendScheduleExport(
+public class AutoSendSchedule(
     ITelegramBotClient client,
     DutyRepository repository,
     ClientSamgkApi clientSamgkApi,
-    ILogger<AutoSendScheduleExport> logger) : BackgroundServiceBase
+    ILogger<AutoSendSchedule> logger) : BackgroundServiceBase
 {
-    
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation($"Запущен сервис");
-
+        
         while (true)
         {
             var dateTime = DateTime.Now;
@@ -34,25 +31,24 @@ public class AutoSendScheduleExport(
 
             logger.LogInformation($"Запуск скрипта по расписанию");
 
-            var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoExport(true);
+            var scheduleProps = await repository.ScheduleProps.GetSchedulePropsFromAutoSend(true);
 
-            if (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday)
-            {
-                await Task.Delay(1000);
-                return;
-            }
+            // если время вечернее смотрим расписание на перед
+            if (dateTime.Hour >= 10) dateTime = dateTime.AddDays(1);
+
+            // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
+            while (dateTime.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) dateTime = dateTime.AddDays(1);
 
             var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(DateOnly.FromDateTime(dateTime));
             
-            foreach (var item in scheduleProps.Where(item => item.LastResult != DateTime.Now.ToString("yyyy-MM-dd")))
+            foreach (var item in scheduleProps)
             {
                 logger.LogInformation($"Скрипт № {item.Id} начал работать");
-                var builderSchedule = new HtmlBuilderSchedule();
 
-                var allExportResult = await clientSamgkApi.Schedule
-                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont, delay: 1500);
+                var result = await clientSamgkApi.Schedule
+                    .GetScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, item.Value, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont);
 
-                if (allExportResult.Count is 0)
+                if (result.Lessons.Count is 0)
                 {
                     logger.LogInformation(
                         $"Скрипт № {item.Id} отработан: Расписание на {dateTime.ToString(CultureInfo.InvariantCulture)} - 0 пар");
@@ -60,23 +56,28 @@ public class AutoSendScheduleExport(
                     continue;
                 }
 
-                foreach (var scheduleFromDate in allExportResult)
-                    builderSchedule.AddRow(scheduleFromDate, item.SearchType);
+                var md5New = result.GetMd5();
 
-                var success = await client.TrySendDocument(item.IdPeer,
-                    new InputFileStream(builderSchedule.GetStreamFile(),
-                        $"{DateOnly.FromDateTime(dateTime)}_{item.SearchType}.html"));
+                if (item.LastResult == md5New)
+                {
+                    logger.LogInformation(
+                        $"Скрипт № {item.Id} отработан: Прошлый результат: {item.LastResult}. Новый {md5New}");
+                    await Task.Delay(1000);
+                    continue;
+                }
 
-                if (!success)
+                var success = await client.TrySendMessage(item.IdPeer, result.GetStringFromRasp());
+
+                if (success is null)
                 {
                     item.Fails++;
                     logger.LogInformation($"Скрипт № {item.Id} не отработан: Ошибки при отправке сообщения");
                 }
 
-                if (success)
+                if (success is not null)
                 {
                     item.Fails = 0;
-                    item.LastResult = DateTime.Now.ToString("yyyy-MM-dd");
+                    item.LastResult = md5New;
                     logger.LogInformation($"Скрипт № {item.Id} отработан: ОК");
                 }
 
@@ -88,9 +89,10 @@ public class AutoSendScheduleExport(
                 }*/
 
                 logger.LogInformation($"Скрипт № {item.Id} Завершен");
+                await Task.Delay(1500);
             }
             
-            await Task.Delay(1800000);
+            await Task.Delay(300000);
         }
     }
 }
