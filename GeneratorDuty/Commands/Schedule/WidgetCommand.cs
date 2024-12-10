@@ -44,6 +44,12 @@ public class WidgetCommand(DutyRepository repository) : BaseCommand
             
             return;
         }
+
+        if (prop.IsAutoSend)
+        {
+            await client.TrySendMessage(message.Chat.Id, $"ℹ️ Вы не можете использовать виджет-режим с авто-отправкой. Отключите /auto, прежде чем активировать виджет.");
+            return;
+        }
         
         var scheduleProp = await client.TrySendMessage(prop.IdPeer, "эт сообщение будет автоматически обновлено");
         
