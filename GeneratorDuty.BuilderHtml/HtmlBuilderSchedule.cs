@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using ClientSamgk.Enums;
+using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 
 namespace GeneratorDuty.BuilderHtml;

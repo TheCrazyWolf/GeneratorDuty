@@ -3,14 +3,12 @@ using ClientSamgk;
 using GeneratorDuty.BuilderHtml;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-
-namespace GeneratorDuty.BackgroundServices;
+namespace GeneratorDuty.BackgroundTasks;
 
 public class AutoSendScheduleExport(
     ITelegramBotClient client,
@@ -23,14 +21,14 @@ public class AutoSendScheduleExport(
     {
         logger.LogInformation($"Запущен сервис");
 
-        while (true)
+        while (!stoppingToken.IsCancellationRequested)
         {
             var dateTime = DateTime.Now;
 
             if (!CanWorkSerivce(DateTime.Now))
             {
                 await Task.Delay(1000);
-                return;
+                continue;
             }
 
             logger.LogInformation($"Запуск скрипта по расписанию");
@@ -51,7 +49,7 @@ public class AutoSendScheduleExport(
                 var builderSchedule = new HtmlBuilderSchedule();
 
                 var allExportResult = await clientSamgkApi.Schedule
-                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont, 1500);
+                    .GetAllScheduleAsync(DateOnly.FromDateTime(dateTime), item.SearchType, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont, delay: 1500);
 
                 if (allExportResult.Count is 0)
                 {

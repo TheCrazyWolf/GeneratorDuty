@@ -1,15 +1,12 @@
-﻿using System.Globalization;
-using ClientSamgk;
+﻿using ClientSamgk;
 using GeneratorDuty.Common;
 using GeneratorDuty.Extensions;
-using GeneratorDuty.Models.Schedule;
-using GeneratorDuty.Repository;
 using GeneratorDuty.Repository.Duty;
 using GeneratorDuty.Utils;
 using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 
-namespace GeneratorDuty.BackgroundServices;
+namespace GeneratorDuty.BackgroundTasks;
 
 public class AutoPinMessageWithSchedule(
     ITelegramBotClient client,
@@ -21,12 +18,12 @@ public class AutoPinMessageWithSchedule(
     {
         logger.LogInformation($"Запущен сервис");
 
-        while (true)
+        while (!stoppingToken.IsCancellationRequested)
         {
             if (!CanWorkSerivce(DateTime.Now))
             {
                 await Task.Delay(1000);
-                return;
+                continue;
             }
 
             logger.LogInformation($"Запуск скрипта по расписанию");
