@@ -27,8 +27,10 @@ public class OpenCommand(DutyRepository repository, ClientSamgkApi clientSamgk) 
             return;
         }
         
+        var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(DateOnly.FromDateTime(DateTime.Now));
+        
         var result = await clientSamgk.Schedule.GetScheduleAsync(DateOnly.FromDateTime(DateTime.Now), 
-            prop.SearchType, prop.Value);
+            prop.SearchType, prop.Value, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont);
         
         await client.TrySendMessage(message.Chat.Id, result.GetStringFromRasp(), replyMarkup:
            new InlineKeyboardMarkup(result.GenerateKeyboardOnSchedule(prop.SearchType, prop.Value)));

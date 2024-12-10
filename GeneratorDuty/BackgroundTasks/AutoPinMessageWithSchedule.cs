@@ -14,6 +14,7 @@ public class AutoPinMessageWithSchedule(
     ClientSamgkApi clientSamgkApi,
     ILogger<AutoPinMessageWithSchedule> logger) : BackgroundServiceBase
 {
+    public virtual int DaysCanBeChecked { get; set; } = 5;
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation($"Запущен сервис");
@@ -41,7 +42,7 @@ public class AutoPinMessageWithSchedule(
 
                 string changedDates = string.Empty;
                 
-                for (int i = 0; i <= 5; i++)
+                for (int i = 0; i < DaysCanBeChecked; i++)
                 {
                     // если день выходной, то пропускаем и добавляем дни пока не попадется рабочий
                     while (todayDate.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) todayDate = todayDate.AddDays(1);

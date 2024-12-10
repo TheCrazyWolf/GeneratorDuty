@@ -46,8 +46,7 @@ public class AutoSendSchedule(
                     var rules = await repository.ScheduleRules.GetRuleFromDateOrDefault(date);
 
                     logger.LogInformation($"Скрипт № {scheduleProp.Id}. Проверка: {date.ToString(CultureInfo.InvariantCulture)}");
-                    var history =
-                        await repository.ScheduleHistory.CreateOrGetScheduleHistory(scheduleProp.IdPeer, date);
+                    var history = await repository.ScheduleHistory.CreateOrGetScheduleHistory(scheduleProp.IdPeer, date);
 
                     var result = await clientSamgkApi.Schedule.GetScheduleAsync(date, scheduleProp.SearchType,
                         scheduleProp.Value, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont);
