@@ -90,7 +90,7 @@ public class AutoPinMessageWithSchedule(
                 await Task.Delay(1500);
             }
 
-            await Task.Delay(3000);
+            await Task.Delay(1800000);
         }
     }
 }
