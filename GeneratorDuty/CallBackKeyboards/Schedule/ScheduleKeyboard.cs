@@ -51,7 +51,7 @@ public class ScheduleKeyboard(ClientSamgkApi clientSamgk, DutyRepository reposit
         if (date < DateTime.Now.Date)
         {
             await repository.ScheduleHistory.CreateScheduleHistory(new ScheduleHistory()
-                        { IdPeer = callbackQuery.Message.Chat.Id, Date = DateOnly.FromDateTime(date), Result = result.GetStringFromRasp() });
+                        { ChatId = callbackQuery.Message.Chat.Id, Date = DateOnly.FromDateTime(date), Result = result.GetStringFromRasp() });
         }
         
         await client.TryEditMessage(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId, 

@@ -14,12 +14,12 @@ public class ScheduleHistoryRepository(DutyContext ef)
     
     public async Task<ScheduleHistory?> GetScheduleHistory(long peerId, DateOnly date)
     {
-        return await ef.History.FirstOrDefaultAsync(x=> x.IdPeer == peerId && x.Date == date);
+        return await ef.History.FirstOrDefaultAsync(x=> x.ChatId == peerId && x.Date == date);
     }
     
     public async Task<IList<ScheduleHistory>> GetPinnedMessageFromPeerId(long peerId, DateOnly exceptDate)
     {
-        return await ef.History.Where(x=> x.IdPeer == peerId)
+        return await ef.History.Where(x=> x.ChatId == peerId)
             .Where(x=> x.IsPinned == true)
             .Where(x=> x.Date != exceptDate)
             .ToListAsync();
@@ -29,7 +29,7 @@ public class ScheduleHistoryRepository(DutyContext ef)
     {
         var scheduleHistory = new ScheduleHistory()
         {
-            IdPeer = peerId,
+            ChatId = peerId,
             Date = date
         };
         
@@ -55,5 +55,24 @@ public class ScheduleHistoryRepository(DutyContext ef)
     {
         message.IsPinned = newValue;
         await UpdateScheduleHistory(message);
+    }
+
+    public async Task<int> InvalidateLocalCache(long chatId)
+    {
+        var cache = await ef.History.Where(x=> x.ChatId == chatId).ToListAsync();
+        var count = cache.Count;
+        foreach (var item in cache) ef.Remove(item);
+        await ef.SaveChangesAsync();
+        return count;
+    }
+
+    public async Task<int> InvalidateLocalCacheGlobal()
+    {
+        var toLastDay = DateOnly.FromDateTime(DateTime.Now).AddDays(-1);
+        var cache = await ef.History.Where(x => x.Date <= toLastDay).ToListAsync();
+        var count = cache.Count;
+        foreach (var item in cache) ef.Remove(item);
+        await ef.SaveChangesAsync();
+        return count;
     }
 }
