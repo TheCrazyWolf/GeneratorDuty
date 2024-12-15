@@ -54,12 +54,14 @@ public class AutoPinMessageWithSchedule(
                     var result = await clientSamgkApi.Schedule.GetScheduleAsync(todayDate, item.SearchType,
                         item.Value, rules.CallType, rules.ShowImportantLesson, rules.ShowRussianHorizont);
 
-                    builderMessage += $"{result.GetStringFromRasp()}";
+                    var newResultStr = result.GetStringFromRasp();
                     
-                    if (history.Result != result.GetStringFromRasp())
+                    builderMessage += $"{newResultStr}";
+                    
+                    if (history.Result != newResultStr)
                     {
-                        changedDates += $"{result.Date.ToString()}, ";
-                        history.Result = result.GetStringFromRasp();
+                        history.Result = newResultStr;
+                        if (!history.Result.Contains("Расписание еще не внесено")) changedDates += $"{result.Date}, ";
                     }
 
                     await repository.ScheduleProps.Update(item);
@@ -67,7 +69,7 @@ public class AutoPinMessageWithSchedule(
                     todayDate = todayDate.AddDays(1);
                 }
 
-                builderMessage += $"Последнее обновление: {DateTime.Now} DateTime.Now.ToString(CultureInfo.CurrentCulture)}}";
+                builderMessage += $"Последнее обновление: {DateTime.Now}";
                 var success = await client.TryEditMessage(pinnedMessage.ChatId, pinnedMessage.MessageId, builderMessage);
                 if (!string.IsNullOrEmpty(changedDates)) await client.TrySendMessage(pinnedMessage.ChatId, $"Обратите внимание на изменения в расписании: {changedDates}");
                 
