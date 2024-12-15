@@ -4,9 +4,9 @@ using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace GeneratorDuty.Utils;
+namespace GeneratorDuty.Extensions;
 
-public static class ScheduleUtils
+public static class ScheduleStrExtensions
 {
     public static string GetStringFromRasp(this IResultOutScheduleFromDate scheduleFromDate)
     {
