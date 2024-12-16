@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using ClientSamgk.Utils;
 using ClientSamgkOutputResponse.Enums;
 using ClientSamgkOutputResponse.Interfaces.Schedule;
 using Telegram.Bot.Types.ReplyMarkups;
@@ -13,6 +14,8 @@ public static class ScheduleStrExtensions
         var msg = new StringBuilder();
         msg.AppendLine(
             $"Расписание на {scheduleFromDate.Date.ToString("dd.MM.yyyy")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek).ToUpperFirstLetter()}");
+        
+        if(scheduleFromDate.CallType != ScheduleCallType.Standart) msg.AppendLine($"\n\n<blockquote> Измененные звонки: {scheduleFromDate.CallType.GetDisplayName()}</blockquote>\n");
 
         msg.AppendLine(scheduleFromDate.Lessons.Count is 0
             ? "<blockquote> Расписание еще не внесено</blockquote>\n"
