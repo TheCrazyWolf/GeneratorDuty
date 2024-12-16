@@ -15,7 +15,7 @@ public static class ScheduleStrExtensions
         msg.AppendLine(
             $"Расписание на {scheduleFromDate.Date.ToString("dd.MM.yyyy")} | {CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(scheduleFromDate.Date.DayOfWeek).ToUpperFirstLetter()}");
         
-        if(scheduleFromDate.CallType != ScheduleCallType.Standart) msg.AppendLine($"\n\n<blockquote> Измененные звонки: {scheduleFromDate.CallType.GetDisplayName()}</blockquote>\n");
+        if(scheduleFromDate.CallType != ScheduleCallType.Standart) msg.AppendLine($"<blockquote> ⚠️ Измененные звонки: {scheduleFromDate.CallType.GetDisplayName()}</blockquote>");
 
         msg.AppendLine(scheduleFromDate.Lessons.Count is 0
             ? "<blockquote> Расписание еще не внесено</blockquote>\n"
